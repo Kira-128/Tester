@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [6] LIBRARY (Flow Hub v2.4) — FIXED + SLIDE DROPDOWN
+  [6] LIBRARY (Flow Hub v2.4) — FIXED + DYNAMIC PANEL SIZE
 ============================================================
 ]]
 
@@ -52,7 +52,7 @@ function Lib.RefreshAllDropdowns()
 end
 
 -- ============================================================
--- HELPER: Recalculate section height (FIXED - NO LOOP)
+-- HELPER: Recalculate section height
 -- ============================================================
 local recalcGuard = {}
 
@@ -89,7 +89,6 @@ local function hookAutoRecalc(card, content)
     content.ChildRemoved:Connect(function()
         task.defer(function() recalcSection(card, content) end)
     end)
-    -- ❌ JANGAN listener AbsoluteSize — pemicu infinite loop
 end
 
 -- ============================================================
@@ -236,11 +235,9 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
 
     b.MouseButton1Click:Connect(function() setState(not state, false) end)
 
-    -- registry
     if configPath then
         local entry = { path = configPath, setState = setState }
         table.insert(ToggleRegistry, entry)
-
         f.Destroying:Connect(function()
             for i = #ToggleRegistry, 1, -1 do
                 if ToggleRegistry[i] == entry then
@@ -409,9 +406,8 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN SLIDE-IN (panel dari kanan MainFrame)
+-- DROPDOWN SLIDE-IN (DYNAMIC SIZE - MATCH SECTION)
 -- ============================================================
-local SLIDE_W = 200
 local SLIDE_PAD = 8
 local SLIDE_TWEEN_IN  = TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 local SLIDE_TWEEN_OUT = TweenInfo.new(0.20, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
@@ -427,11 +423,22 @@ local SlidePanel = {
     initialized = false,
 }
 
+-- Fungsi untuk mendapatkan ukuran panel yang dinamis (mengikuti lebar konten MainFrame)
+local function getPanelWidth()
+    if S.GUI and S.GUI.MainFrame then
+        -- Ambil 50% lebar layar dari MainFrame (atau sesuaikan dengan kebutuhan)
+        -- Di sini saya gunakan perkiraan lebar 250px agar mirip dengan layout konten
+        return 250
+    end
+    return 200
+end
+
 local function slideClosedPos()
-    return UDim2.new(1, SLIDE_W + 4, 0, 0)
+    local w = getPanelWidth()
+    return UDim2.new(1, w + 4, 0.5, 0)
 end
 local function slideOpenPos()
-    return UDim2.new(1, -SLIDE_PAD, 0, 0)
+    return UDim2.new(1, -SLIDE_PAD, 0.5, 0)
 end
 
 local function initSlidePanel()
@@ -439,7 +446,7 @@ local function initSlidePanel()
     if not S.GUI or not S.GUI.MainFrame then return end
     SlidePanel.initialized = true
 
-    -- overlay (klik di luar = tutup)
+    -- Overlay (klik luar = tutup)
     local overlay = Instance.new("TextButton")
     overlay.Name = "SlideOverlay"
     overlay.Size = UDim2.new(1, 0, 1, 0)
@@ -457,14 +464,14 @@ local function initSlidePanel()
     end)
     SlidePanel.overlay = overlay
 
-    -- panel slide
+    -- Panel (Ukuran disesuaikan)
     local panel = Instance.new("Frame")
     panel.Name = "SlidePanel"
-    panel.AnchorPoint = Vector2.new(1, 0)
-    panel.Size = UDim2.new(0, SLIDE_W, 1, 0)
+    panel.AnchorPoint = Vector2.new(1, 0.5)
+    panel.Size = UDim2.new(0, getPanelWidth(), 1, -16) -- Tinggi dinamis dengan margin 8px atas bawah
     panel.Position = slideClosedPos()
     panel.BackgroundColor3 = C.bg2
-    panel.BackgroundTransparency = 0.05
+    panel.BackgroundTransparency = 0.09 -- vd.lua style (sedikit tembus pandang)
     panel.BorderSizePixel = 0
     panel.ClipsDescendants = true
     panel.ZIndex = 152
@@ -474,11 +481,11 @@ local function initSlidePanel()
     local pStroke = Instance.new("UIStroke")
     pStroke.Color = C.stroke
     pStroke.Thickness = 1
-    pStroke.Transparency = 0.4
+    pStroke.Transparency = 0.45
     pStroke.Parent = panel
     SlidePanel.panel = panel
 
-    -- folder halaman
+    -- Folder halaman
     local folder = Instance.new("Frame")
     folder.Name = "SlideFolder"
     folder.Size = UDim2.new(1, -2, 1, 0)
@@ -490,7 +497,7 @@ local function initSlidePanel()
     folder.Parent = panel
     SlidePanel.folder = folder
 
-    -- page layout
+    -- Page layout
     local pageLayout = Instance.new("UIPageLayout")
     pageLayout.EasingDirection = Enum.EasingDirection.InOut
     pageLayout.EasingStyle = Enum.EasingStyle.Quad
@@ -560,7 +567,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     local layoutOrder = SlidePanel.count
     SlidePanel.count += 1
 
-    -- row container
+    -- Container baris
     local f = Instance.new("Frame")
     f.Name = "Dropdown_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
@@ -580,7 +587,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     lbl.BackgroundTransparency = 1
     lbl.Parent = f
 
-    -- tombol selected
+    -- Tombol selected
     local dropdownBtn = Instance.new("TextButton")
     dropdownBtn.Name = "Button_" .. name
     dropdownBtn.AnchorPoint = Vector2.new(1, 0.5)
@@ -606,7 +613,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     optionLabel.Position = UDim2.new(0, 8, 0, 0)
     optionLabel.Text = "Select..."
     optionLabel.TextColor3 = C.textDim
-    optionLabel.TextSize = 10
+    optionLabel.TextSize = 11
     optionLabel.Font = F.bold
     optionLabel.TextXAlignment = Enum.TextXAlignment.Left
     optionLabel.TextTruncate = Enum.TextTruncate.AtEnd
@@ -624,7 +631,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     arrow.ZIndex = 9
     arrow.Parent = dropdownBtn
 
-    -- hover tombol
     dropdownBtn.MouseEnter:Connect(function()
         TS:Create(dropdownBtn, TweenInfo.new(0.15), {
             BackgroundColor3 = C.bg3,
@@ -638,7 +644,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         }):Play()
     end)
 
-    -- page container (di dalam SlidePanel.folder)
+    -- Page container
     local container = Instance.new("Frame")
     container.Name = "Page_" .. name
     container.Size = UDim2.new(1, 0, 1, 0)
@@ -646,7 +652,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     container.LayoutOrder = layoutOrder
     container.Parent = SlidePanel.folder
 
-    -- search (hanya jika > 6 option)
+    -- Search
     local showSearch = #initialOptions > 6
 
     local searchBox = Instance.new("TextBox")
@@ -657,7 +663,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchBox.PlaceholderText = "Search..."
     searchBox.PlaceholderColor3 = C.textDim2
     searchBox.TextColor3 = C.text
-    searchBox.TextSize = 10
+    searchBox.TextSize = 11
     searchBox.Font = F.norm
     searchBox.BackgroundColor3 = C.bg3
     searchBox.BackgroundTransparency = 0.3
@@ -672,7 +678,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchPad.PaddingLeft = UDim.new(0, 8)
     searchPad.Parent = searchBox
 
-    -- list
+    -- List
     local scrollSelect = Instance.new("ScrollingFrame")
     scrollSelect.Name = "OptionsList"
     scrollSelect.Size = showSearch and UDim2.new(1, -8, 1, -36) or UDim2.new(1, -8, 1, -8)
@@ -694,7 +700,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Parent = scrollSelect
 
-    -- normalize options
+    -- Normalize options
     local allOptions = {}
     local function normalizeOptions(opts)
         allOptions = {}
@@ -714,12 +720,10 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     end
     normalizeOptions(initialOptions)
 
-    -- state
     local currentValue = initialOptions[1]
     local rows = {}
     local destroyed = false
 
-    -- set label
     local function setLabel()
         if currentValue == nil then
             optionLabel.Text = "Select..."
@@ -738,7 +742,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     end
     setLabel()
 
-    -- rebuild rows
+    -- Rebuild Rows
     local function rebuild(filter)
         if destroyed then return end
         filter = string.lower(filter or "")
@@ -755,9 +759,9 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 local isSelected = (opt.value == currentValue)
 
                 local row = Instance.new("TextButton")
-                row.Size = UDim2.new(1, -6, 0, 26)
+                row.Size = UDim2.new(1, -6, 0, 28) -- Sedikit lebih tinggi
                 row.BackgroundColor3 = isSelected and C.bg3 or C.bg2
-                row.BackgroundTransparency = isSelected and 0.2 or 0.5
+                row.BackgroundTransparency = isSelected and 0.2 or 1
                 row.BorderSizePixel = 0
                 row.Text = ""
                 row.AutoButtonColor = false
@@ -779,10 +783,10 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
                 local optLbl = Instance.new("TextLabel")
                 optLbl.Size = UDim2.new(1, -16, 1, 0)
-                optLbl.Position = UDim2.new(0, isSelected and 10 or 8, 0, 0)
+                optLbl.Position = UDim2.new(0, isSelected and 12 or 8, 0, 0)
                 optLbl.Text = opt.label
-                optLbl.TextColor3 = isSelected and C.accent or C.textDim
-                optLbl.TextSize = 10
+                optLbl.TextColor3 = isSelected and C.text or C.textDim
+                optLbl.TextSize = 11
                 optLbl.Font = isSelected and F.bold or F.norm
                 optLbl.TextXAlignment = Enum.TextXAlignment.Left
                 optLbl.TextTruncate = Enum.TextTruncate.AtEnd
@@ -794,7 +798,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                     if not isSelected then
                         TS:Create(row, TweenInfo.new(0.12), {
                             BackgroundColor3 = C.bg3,
-                            BackgroundTransparency = 0.3
+                            BackgroundTransparency = 0.5
                         }):Play()
                     end
                 end)
@@ -802,7 +806,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                     if not isSelected then
                         TS:Create(row, TweenInfo.new(0.12), {
                             BackgroundColor3 = C.bg2,
-                            BackgroundTransparency = 0.5
+                            BackgroundTransparency = 1
                         }):Play()
                     end
                 end)
@@ -826,7 +830,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         rebuild(searchBox.Text)
     end)
 
-    -- component API
+    -- API Component
     local component = {
         _arrow = arrow,
         frame = f,
@@ -860,7 +864,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         end,
     }
 
-    -- toggle panel
+    -- Toggle Panel
     dropdownBtn.MouseButton1Click:Connect(function()
         if destroyed then return end
         if SlidePanel.active == component then
@@ -873,14 +877,14 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         end
     end)
 
-    -- registry
+    -- Registry
     local regEntry = {
         setValue = component.SetValue,
         getValue = component.GetValue,
     }
     table.insert(DropdownRegistry, regEntry)
 
-    -- cleanup
+    -- Cleanup
     f.Destroying:Connect(function()
         destroyed = true
         if SlidePanel.active == component then
