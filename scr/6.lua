@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [6] LIBRARY (Flow Hub v2.4) — FIXED + DYNAMIC PANEL SIZE
+  [6] LIBRARY (Flow Hub) — LYNX STYLE (SERVICES INCLUDED)
 ============================================================
 ]]
 
@@ -9,17 +9,21 @@ local C = S.Theme.Colors
 local F = S.Theme.Font
 
 local Lib = {}
-local ITEM_H = 34
+
+-- ============================================================
+-- UKURAN STANDAR LYNX
+-- ============================================================
+local ITEM_H = 28
 local HEADER_H = 30
 local CARD_BG = C.bg3
 local CARD_TRANS = 0.15
 
 -- ============================================================
--- SERVICES (fallback)
+-- SERVICES (Langsung menggunakan milikmu)
 -- ============================================================
-local TS  = (S.Services and S.Services.TS)  or game:GetService("TweenService")
-local UIS = (S.Services and S.Services.UIS) or game:GetService("UserInputService")
-local Run = (S.Services and S.Services.Run) or game:GetService("RunService")
+local TS  = S.Services.TS
+local UIS = S.Services.UIS
+local Run = S.Services.Run
 
 -- ============================================================
 -- REGISTRY
@@ -27,9 +31,6 @@ local Run = (S.Services and S.Services.Run) or game:GetService("RunService")
 local ToggleRegistry   = {}
 local DropdownRegistry = {}
 
--- ============================================================
--- REFRESH ALL (toggle + dropdown)
--- ============================================================
 function Lib.RefreshAll()
     for _, entry in pairs(ToggleRegistry) do
         local path = entry.path
@@ -179,7 +180,7 @@ function Lib.makeSection(parent, title, defaultOpen)
 end
 
 -- ============================================================
--- TOGGLE (WITH REGISTRY)
+-- TOGGLE (Lynx Style)
 -- ============================================================
 function Lib.makeToggle(parent, name, default, callback, configPath)
     local f = Instance.new("Frame")
@@ -194,8 +195,8 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 11
-    l.Font = F.norm
+    l.TextSize = 10
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -251,7 +252,7 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
 end
 
 -- ============================================================
--- INPUT (number)
+-- INPUT NUMBER (Lynx Style)
 -- ============================================================
 function Lib.makeInput(parent, name, default, callback)
     local f = Instance.new("Frame")
@@ -266,8 +267,8 @@ function Lib.makeInput(parent, name, default, callback)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 11
-    l.Font = F.norm
+    l.TextSize = 10
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -275,11 +276,11 @@ function Lib.makeInput(parent, name, default, callback)
     local b = Instance.new("TextBox")
     b.AnchorPoint = Vector2.new(1, 0.5)
     b.Position = UDim2.new(1, -12, 0.5, 0)
-    b.Size = UDim2.new(0.20, 0, 0, 22)
+    b.Size = UDim2.new(0.20, 0, 0, 20)
     b.Text = tostring(default)
     b.TextColor3 = C.text
-    b.TextSize = 11
-    b.Font = F.norm
+    b.TextSize = 10
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -299,7 +300,7 @@ function Lib.makeInput(parent, name, default, callback)
 end
 
 -- ============================================================
--- TEXT INPUT
+-- TEXT INPUT (Lynx Style)
 -- ============================================================
 function Lib.makeTextInput(parent, name, default, placeholder, callback)
     local f = Instance.new("Frame")
@@ -314,8 +315,8 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 11
-    l.Font = F.norm
+    l.TextSize = 10
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -324,13 +325,13 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     b.Name = "TextBox"
     b.AnchorPoint = Vector2.new(1, 0.5)
     b.Position = UDim2.new(1, -12, 0.5, 0)
-    b.Size = UDim2.new(0.48, 0, 0, 22)
+    b.Size = UDim2.new(0.48, 0, 0, 20)
     b.Text = tostring(default or "")
     b.PlaceholderText = placeholder or ""
     b.PlaceholderColor3 = C.textDim2
     b.TextColor3 = C.text
-    b.TextSize = 11
-    b.Font = F.norm
+    b.TextSize = 10
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -342,7 +343,7 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
 end
 
 -- ============================================================
--- BUTTON
+-- BUTTON (Lynx Style)
 -- ============================================================
 function Lib.makeButton(parent, name, callback, noHover)
     local wrapper = Instance.new("Frame")
@@ -357,8 +358,8 @@ function Lib.makeButton(parent, name, callback, noHover)
     b.Position = UDim2.new(0, 6, 0.5, -(ITEM_H - 8) / 2)
     b.Text = name
     b.TextColor3 = C.text
-    b.TextSize = 11
-    b.Font = F.norm
+    b.TextSize = 10
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BackgroundTransparency = 0.3
     b.BorderSizePixel = 0
@@ -406,11 +407,12 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN SLIDE-IN (DYNAMIC SIZE - MATCH SECTION)
+-- DROPDOWN SLIDE-IN (Lynx Style)
 -- ============================================================
+local SLIDE_W = 160 
 local SLIDE_PAD = 8
-local SLIDE_TWEEN_IN  = TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-local SLIDE_TWEEN_OUT = TweenInfo.new(0.20, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+local SLIDE_TWEEN_IN  = TweenInfo.new(0.24, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+local SLIDE_TWEEN_OUT = TweenInfo.new(0.18, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
 
 local SlidePanel = {
     overlay = nil,
@@ -423,22 +425,11 @@ local SlidePanel = {
     initialized = false,
 }
 
--- Fungsi untuk mendapatkan ukuran panel yang dinamis (mengikuti lebar konten MainFrame)
-local function getPanelWidth()
-    if S.GUI and S.GUI.MainFrame then
-        -- Ambil 50% lebar layar dari MainFrame (atau sesuaikan dengan kebutuhan)
-        -- Di sini saya gunakan perkiraan lebar 250px agar mirip dengan layout konten
-        return 250
-    end
-    return 200
-end
-
 local function slideClosedPos()
-    local w = getPanelWidth()
-    return UDim2.new(1, w + 4, 0.5, 0)
+    return UDim2.new(1, SLIDE_W + 4, 0.5, 0)
 end
 local function slideOpenPos()
-    return UDim2.new(1, -SLIDE_PAD, 0.5, 0)
+    return UDim2.new(1, -11, 0.5, 0)
 end
 
 local function initSlidePanel()
@@ -446,7 +437,6 @@ local function initSlidePanel()
     if not S.GUI or not S.GUI.MainFrame then return end
     SlidePanel.initialized = true
 
-    -- Overlay (klik luar = tutup)
     local overlay = Instance.new("TextButton")
     overlay.Name = "SlideOverlay"
     overlay.Size = UDim2.new(1, 0, 1, 0)
@@ -464,14 +454,13 @@ local function initSlidePanel()
     end)
     SlidePanel.overlay = overlay
 
-    -- Panel (Ukuran disesuaikan)
     local panel = Instance.new("Frame")
     panel.Name = "SlidePanel"
     panel.AnchorPoint = Vector2.new(1, 0.5)
-    panel.Size = UDim2.new(0, getPanelWidth(), 1, -16) -- Tinggi dinamis dengan margin 8px atas bawah
+    panel.Size = UDim2.new(0, SLIDE_W, 1, -16) 
     panel.Position = slideClosedPos()
     panel.BackgroundColor3 = C.bg2
-    panel.BackgroundTransparency = 0.09 -- vd.lua style (sedikit tembus pandang)
+    panel.BackgroundTransparency = 0.09 
     panel.BorderSizePixel = 0
     panel.ClipsDescendants = true
     panel.ZIndex = 152
@@ -485,7 +474,6 @@ local function initSlidePanel()
     pStroke.Parent = panel
     SlidePanel.panel = panel
 
-    -- Folder halaman
     local folder = Instance.new("Frame")
     folder.Name = "SlideFolder"
     folder.Size = UDim2.new(1, -2, 1, 0)
@@ -497,7 +485,6 @@ local function initSlidePanel()
     folder.Parent = panel
     SlidePanel.folder = folder
 
-    -- Page layout
     local pageLayout = Instance.new("UIPageLayout")
     pageLayout.EasingDirection = Enum.EasingDirection.InOut
     pageLayout.EasingStyle = Enum.EasingStyle.Quad
@@ -567,7 +554,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     local layoutOrder = SlidePanel.count
     SlidePanel.count += 1
 
-    -- Container baris
     local f = Instance.new("Frame")
     f.Name = "Dropdown_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
@@ -581,17 +567,16 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     lbl.Position = UDim2.new(0, 12, 0, 0)
     lbl.Text = name
     lbl.TextColor3 = C.text
-    lbl.TextSize = 11
+    lbl.TextSize = 10
     lbl.Font = F.bold
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.BackgroundTransparency = 1
     lbl.Parent = f
 
-    -- Tombol selected
     local dropdownBtn = Instance.new("TextButton")
     dropdownBtn.Name = "Button_" .. name
     dropdownBtn.AnchorPoint = Vector2.new(1, 0.5)
-    dropdownBtn.Position = UDim2.new(1, -12, 0.5, 0)
+    dropdownBtn.Position = UDim2.new(1, 0, 0.5, 0)
     dropdownBtn.Size = UDim2.new(0.48, 0, 0, 22)
     dropdownBtn.Text = ""
     dropdownBtn.BackgroundColor3 = C.bg2
@@ -613,7 +598,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     optionLabel.Position = UDim2.new(0, 8, 0, 0)
     optionLabel.Text = "Select..."
     optionLabel.TextColor3 = C.textDim
-    optionLabel.TextSize = 11
+    optionLabel.TextSize = 10
     optionLabel.Font = F.bold
     optionLabel.TextXAlignment = Enum.TextXAlignment.Left
     optionLabel.TextTruncate = Enum.TextTruncate.AtEnd
@@ -644,7 +629,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         }):Play()
     end)
 
-    -- Page container
     local container = Instance.new("Frame")
     container.Name = "Page_" .. name
     container.Size = UDim2.new(1, 0, 1, 0)
@@ -652,9 +636,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     container.LayoutOrder = layoutOrder
     container.Parent = SlidePanel.folder
 
-    -- Search
     local showSearch = #initialOptions > 6
-
     local searchBox = Instance.new("TextBox")
     searchBox.Name = "SearchBox"
     searchBox.Size = UDim2.new(1, -8, 0, 24)
@@ -663,7 +645,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchBox.PlaceholderText = "Search..."
     searchBox.PlaceholderColor3 = C.textDim2
     searchBox.TextColor3 = C.text
-    searchBox.TextSize = 11
+    searchBox.TextSize = 10
     searchBox.Font = F.norm
     searchBox.BackgroundColor3 = C.bg3
     searchBox.BackgroundTransparency = 0.3
@@ -678,20 +660,16 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchPad.PaddingLeft = UDim.new(0, 8)
     searchPad.Parent = searchBox
 
-    -- List
     local scrollSelect = Instance.new("ScrollingFrame")
     scrollSelect.Name = "OptionsList"
     scrollSelect.Size = showSearch and UDim2.new(1, -8, 1, -36) or UDim2.new(1, -8, 1, -8)
     scrollSelect.Position = showSearch and UDim2.new(0, 4, 0, 32) or UDim2.new(0, 4, 0, 4)
     scrollSelect.BackgroundTransparency = 1
     scrollSelect.BorderSizePixel = 0
-    scrollSelect.ScrollBarThickness = 3
-    scrollSelect.ScrollBarImageColor3 = C.accent
-    scrollSelect.ScrollBarImageTransparency = 0.4
+    scrollSelect.ScrollBarThickness = 0
     scrollSelect.CanvasSize = UDim2.new(0, 0, 0, 0)
     scrollSelect.AutomaticCanvasSize = Enum.AutomaticSize.Y
     scrollSelect.ScrollingDirection = Enum.ScrollingDirection.Y
-    scrollSelect.ElasticBehavior = Enum.ElasticBehavior.Never
     scrollSelect.ZIndex = 154
     scrollSelect.Parent = container
 
@@ -700,7 +678,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Parent = scrollSelect
 
-    -- Normalize options
     local allOptions = {}
     local function normalizeOptions(opts)
         allOptions = {}
@@ -742,11 +719,9 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     end
     setLabel()
 
-    -- Rebuild Rows
     local function rebuild(filter)
         if destroyed then return end
         filter = string.lower(filter or "")
-
         for _, r in ipairs(rows) do
             if r.button and r.button.Parent then r.button:Destroy() end
         end
@@ -759,9 +734,9 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 local isSelected = (opt.value == currentValue)
 
                 local row = Instance.new("TextButton")
-                row.Size = UDim2.new(1, -6, 0, 28) -- Sedikit lebih tinggi
+                row.Size = UDim2.new(1, 0, 0, 26)
                 row.BackgroundColor3 = isSelected and C.bg3 or C.bg2
-                row.BackgroundTransparency = isSelected and 0.2 or 1
+                row.BackgroundTransparency = isSelected and 0.1 or 0.5
                 row.BorderSizePixel = 0
                 row.Text = ""
                 row.AutoButtonColor = false
@@ -773,7 +748,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 if isSelected then
                     local accentBar = Instance.new("Frame")
                     accentBar.Size = UDim2.new(0, 3, 0, 16)
-                    accentBar.Position = UDim2.new(0, 2, 0.5, -8)
+                    accentBar.Position = UDim2.new(0, 0, 0.5, -8)
                     accentBar.BackgroundColor3 = C.accent
                     accentBar.BorderSizePixel = 0
                     accentBar.ZIndex = 156
@@ -783,10 +758,10 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
                 local optLbl = Instance.new("TextLabel")
                 optLbl.Size = UDim2.new(1, -16, 1, 0)
-                optLbl.Position = UDim2.new(0, isSelected and 12 or 8, 0, 0)
+                optLbl.Position = UDim2.new(0, 10, 0, 0)
                 optLbl.Text = opt.label
                 optLbl.TextColor3 = isSelected and C.text or C.textDim
-                optLbl.TextSize = 11
+                optLbl.TextSize = 10
                 optLbl.Font = isSelected and F.bold or F.norm
                 optLbl.TextXAlignment = Enum.TextXAlignment.Left
                 optLbl.TextTruncate = Enum.TextTruncate.AtEnd
@@ -798,7 +773,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                     if not isSelected then
                         TS:Create(row, TweenInfo.new(0.12), {
                             BackgroundColor3 = C.bg3,
-                            BackgroundTransparency = 0.5
+                            BackgroundTransparency = 0.4
                         }):Play()
                     end
                 end)
@@ -806,7 +781,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                     if not isSelected then
                         TS:Create(row, TweenInfo.new(0.12), {
                             BackgroundColor3 = C.bg2,
-                            BackgroundTransparency = 1
+                            BackgroundTransparency = 0.5
                         }):Play()
                     end
                 end)
@@ -830,7 +805,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         rebuild(searchBox.Text)
     end)
 
-    -- API Component
     local component = {
         _arrow = arrow,
         frame = f,
@@ -864,7 +838,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         end,
     }
 
-    -- Toggle Panel
     dropdownBtn.MouseButton1Click:Connect(function()
         if destroyed then return end
         if SlidePanel.active == component then
@@ -877,14 +850,12 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         end
     end)
 
-    -- Registry
     local regEntry = {
         setValue = component.SetValue,
         getValue = component.GetValue,
     }
     table.insert(DropdownRegistry, regEntry)
 
-    -- Cleanup
     f.Destroying:Connect(function()
         destroyed = true
         if SlidePanel.active == component then
@@ -901,209 +872,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     end)
 
     return component
-end
-
--- ============================================================
--- RESIZE HANDLE
--- ============================================================
-function Lib.attachResizeHandle(mainFrame)
-    if not mainFrame or not mainFrame.Parent then return end
-
-    local UIS = S.Services.UIS or game:GetService("UserInputService")
-    local TS = S.Services.TS or game:GetService("TweenService")
-    local RunService = S.Services.Run or game:GetService("RunService")
-
-    local isMobile = UIS.TouchEnabled and not UIS.MouseEnabled
-    local minW, minH, maxW, maxH
-
-    if isMobile then
-        minW, minH = 380, 250
-        maxW, maxH = 800, 600
-    else
-        minW, minH = 440, 300
-        maxW, maxH = 1100, 760
-    end
-
-    local oldHandle = mainFrame:FindFirstChild("ResizeHandle")
-    if oldHandle then oldHandle:Destroy() end
-    local oldLayer = mainFrame.Parent and mainFrame.Parent:FindFirstChild("ResizeHandleLayer")
-    if oldLayer then oldLayer:Destroy() end
-
-    local handleLayer = Instance.new("Frame")
-    handleLayer.Name = "ResizeHandleLayer"
-    handleLayer.Size = UDim2.new(1, 0, 1, 0)
-    handleLayer.BackgroundTransparency = 1
-    handleLayer.BorderSizePixel = 0
-    handleLayer.ClipsDescendants = false
-    handleLayer.ZIndex = 9998
-    handleLayer.Active = false
-    handleLayer.Parent = mainFrame.Parent
-
-    local resizeHandle = Instance.new("TextButton")
-    resizeHandle.Name = "ResizeHandle"
-    resizeHandle.Size = UDim2.new(0, 44, 0, 44)
-    resizeHandle.AnchorPoint = Vector2.new(1, 1)
-    resizeHandle.Position = UDim2.new(0, 0, 0, 0)
-    resizeHandle.BackgroundTransparency = 1
-    resizeHandle.Text = ""
-    resizeHandle.AutoButtonColor = false
-    resizeHandle.ZIndex = 9999
-    resizeHandle.Visible = true
-    resizeHandle.Parent = handleLayer
-
-    local arcContainer = Instance.new("Frame")
-    arcContainer.Size = UDim2.new(0, 24, 0, 24)
-    arcContainer.AnchorPoint = Vector2.new(1, 1)
-    arcContainer.Position = UDim2.new(1, 0, 1, 0)
-    arcContainer.BackgroundTransparency = 1
-    arcContainer.ClipsDescendants = true
-    arcContainer.ZIndex = 10000
-    arcContainer.Parent = resizeHandle
-
-    local curvedRing = Instance.new("Frame")
-    curvedRing.Size = UDim2.new(0, 34, 0, 34)
-    curvedRing.AnchorPoint = Vector2.new(0, 0)
-    curvedRing.Position = UDim2.new(0, -17, 0, -17)
-    curvedRing.BackgroundTransparency = 1
-    curvedRing.ZIndex = 10000
-    curvedRing.Parent = arcContainer
-
-    local ringStroke = Instance.new("UIStroke")
-    ringStroke.Color = Color3.fromRGB(220, 220, 220)
-    ringStroke.Thickness = 2.8
-    ringStroke.Transparency = 0.45
-    ringStroke.Parent = curvedRing
-
-    local ringCorner = Instance.new("UICorner")
-    ringCorner.CornerRadius = UDim.new(1, 0)
-    ringCorner.Parent = curvedRing
-
-    local GAP = 14
-    local function updateHandlePosition()
-        local mfPos = mainFrame.AbsolutePosition
-        local mfSize = mainFrame.AbsoluteSize
-        local layerPos = handleLayer.AbsolutePosition
-        local localX = (mfPos.X + mfSize.X) - layerPos.X + GAP
-        local localY = (mfPos.Y + mfSize.Y) - layerPos.Y + GAP
-        resizeHandle.Position = UDim2.new(0, localX, 0, localY)
-    end
-
-    local updateConn = RunService.RenderStepped:Connect(updateHandlePosition)
-    updateHandlePosition()
-
-    local isShowing = true
-    local hideTimer = nil
-    local IDLE_TIME = 5
-    local resizing = false
-    local destroyed = false
-
-    local function applyVisualState(show)
-        isShowing = show
-        if show then
-            resizeHandle.Visible = true
-            TS:Create(ringStroke, TweenInfo.new(0.2), { Transparency = 0.45 }):Play()
-        else
-            TS:Create(ringStroke, TweenInfo.new(0.3), { Transparency = 0.85 }):Play()
-        end
-    end
-
-    local function showHandle()
-        if not mainFrame.Visible then return end
-        if not isShowing then applyVisualState(true) end
-        if hideTimer then pcall(task.cancel, hideTimer) end
-        hideTimer = task.delay(IDLE_TIME, function()
-            if not resizing and isShowing then applyVisualState(false) end
-        end)
-    end
-
-    local activeInput = nil
-    local resizeStart = nil
-    local startSize = nil
-
-    resizeHandle.InputBegan:Connect(function(input)
-        if destroyed or not mainFrame.Visible then return end
-        local it = input.UserInputType
-        if it == Enum.UserInputType.MouseButton1 or it == Enum.UserInputType.Touch then
-            resizing = true
-            activeInput = input
-            resizeStart = input.Position
-            startSize = mainFrame.AbsoluteSize
-            showHandle()
-        end
-    end)
-
-    local inputChangedConn = UIS.InputChanged:Connect(function(input)
-        if not resizing or not activeInput then return end
-        local isMouse = activeInput.UserInputType == Enum.UserInputType.MouseButton1
-            and input.UserInputType == Enum.UserInputType.MouseMovement
-        local isTouch = activeInput.UserInputType == Enum.UserInputType.Touch and input == activeInput
-        if not isMouse and not isTouch then return end
-
-        local delta = input.Position - resizeStart
-        local newW = math.clamp(startSize.X + delta.X, minW, maxW)
-        local newH = math.clamp(startSize.Y + delta.Y, minH, maxH)
-
-        mainFrame.Size = UDim2.new(0, newW, 0, newH)
-        updateHandlePosition()
-        showHandle()
-    end)
-
-    local inputEndedConn = UIS.InputEnded:Connect(function(input)
-        if not resizing or not activeInput then return end
-        local isMouse = activeInput.UserInputType == Enum.UserInputType.MouseButton1
-            and input.UserInputType == Enum.UserInputType.MouseButton1
-        local isTouch = activeInput.UserInputType == Enum.UserInputType.Touch and input == activeInput
-        if isMouse or isTouch then
-            resizing = false
-            activeInput = nil
-            resizeStart = nil
-            startSize = nil
-            showHandle()
-        end
-    end)
-
-    local moveConn = UIS.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement
-            or input.UserInputType == Enum.UserInputType.Touch then
-            showHandle()
-        end
-    end)
-
-    local renderConn = RunService.RenderStepped:Connect(function()
-        if destroyed then return end
-        if not mainFrame.Parent then
-            resizeHandle.Visible = false
-            return
-        end
-        if not mainFrame.Visible then
-            resizeHandle.Visible = false
-            isShowing = false
-            if hideTimer then pcall(task.cancel, hideTimer) hideTimer = nil end
-        else
-            updateHandlePosition()
-        end
-    end)
-
-    local function cleanup()
-        if destroyed then return end
-        destroyed = true
-        resizing = false
-        activeInput = nil
-        if hideTimer then pcall(task.cancel, hideTimer) end
-        updateConn:Disconnect()
-        renderConn:Disconnect()
-        inputChangedConn:Disconnect()
-        inputEndedConn:Disconnect()
-        moveConn:Disconnect()
-        if handleLayer.Parent then handleLayer:Destroy() end
-    end
-
-    resizeHandle.Destroying:Connect(cleanup)
-    mainFrame.Destroying:Connect(cleanup)
-
-    applyVisualState(true)
-
-    return resizeHandle
 end
 
 -- ============================================================
