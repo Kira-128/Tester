@@ -1,24 +1,35 @@
 local Theme = {
     Colors = {
-        bg       = Color3.fromRGB(18, 18, 21),
-        bg2      = Color3.fromRGB(26, 26, 30),
-        bg3      = Color3.fromRGB(32, 32, 36),
-        bg4      = Color3.fromRGB(38, 38, 43),
-        panel    = Color3.fromRGB(22, 22, 26),
+        -- 🌿 Aksen Utama (Mint/Neon Green - Pengganti Orange Lynx)
+        primary   = Color3.fromRGB(110, 231, 183), -- Warna utama (Mint Green)
+        secondary = Color3.fromRGB(150, 255, 200), -- Sedikit lebih terang
+        accent    = Color3.fromRGB(110, 231, 183), -- Samakan dengan primary untuk konsistensi
+        
+        -- 🌑 Latar Belakang (Hierarki Dark Green ala Lynx)
+        -- Lynx pakai (15,10,5) untuk cokelat. Kita pakai (10,15,10) untuk hijau.
+        bg        = Color3.fromRGB(10, 12, 10),    -- Paling gelap (Overlay / Layar belakang)
+        panel     = Color3.fromRGB(15, 18, 15),    -- MainFrame
+        bg2       = Color3.fromRGB(25, 30, 25),    -- Header / Sidebar
+        bg3       = Color3.fromRGB(35, 45, 35),    -- Section / Kotak (Lebih terang)
+        bg4       = Color3.fromRGB(48, 60, 48),    -- Tombol / Input (Paling terang)
 
-        accent   = Color3.fromRGB(110, 231, 183),
+        -- 📝 Teks (Warm White - Putih dengan tint hijau tipis)
+        text      = Color3.fromRGB(240, 250, 240),
+        textDim   = Color3.fromRGB(190, 210, 190),
+        textDim2  = Color3.fromRGB(130, 150, 130),
 
-        text     = Color3.fromRGB(240, 240, 245),
-        textDim  = Color3.fromRGB(160, 160, 170),
-        textDim2 = Color3.fromRGB(110, 110, 120),
+        -- 🚦 Status (Untuk fitur Danger/Warning)
+        red       = Color3.fromRGB(230, 70, 70),
+        yellow    = Color3.fromRGB(255, 200, 80),
+        blue      = Color3.fromRGB(80, 160, 240),
+        green     = Color3.fromRGB(110, 231, 183),
 
-        green    = Color3.fromRGB(110, 231, 183),
-        red      = Color3.fromRGB(230, 70, 70),
-        yellow   = Color3.fromRGB(255, 200, 80),
-        blue     = Color3.fromRGB(80, 160, 240),
-
-        stroke   = Color3.fromRGB(45, 45, 52),
-        stroke2  = Color3.fromRGB(58, 58, 66),
+        -- 🔲 Garis Tepi (Border/Stroke)
+        stroke    = Color3.fromRGB(55, 75, 55),
+        stroke2   = Color3.fromRGB(70, 95, 70),
+        
+        -- Transparan
+        transparent = Color3.fromRGB(0, 0, 0),
     },
 
     Icons = {
