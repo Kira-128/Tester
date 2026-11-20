@@ -618,6 +618,73 @@ S.GUI.MainFrame.Visible = true
 S.GUI.FloatBtn.Visible = false
 
 -- ============================================================
+-- PROFILE CARD (KIRI BAWAH)
+-- ============================================================
+local profileFrame = Instance.new("Frame")
+profileFrame.Name = "ProfileCard"
+profileFrame.Size = UDim2.new(0, 110, 0, 50)
+profileFrame.Position = UDim2.new(0, 10, 1, -60) -- Posisi di kiri bawah sidebar
+profileFrame.BackgroundColor3 = C.bg2
+profileFrame.BackgroundTransparency = 0.3
+profileFrame.BorderSizePixel = 0
+profileFrame.ZIndex = 10
+profileFrame.Parent = S.GUI.Sidebar
+Instance.new("UICorner", profileFrame).CornerRadius = UDim.new(0, 6)
+
+-- Garis Tepi
+local pStroke = Instance.new("UIStroke")
+pStroke.Color = C.stroke
+pStroke.Thickness = 1
+pStroke.Transparency = 0.4
+pStroke.Parent = profileFrame
+
+-- Avatar Player (Gambar)
+local avatar = Instance.new("ImageLabel")
+avatar.Name = "Avatar"
+avatar.Size = UDim2.new(0, 34, 0, 34)
+avatar.Position = UDim2.new(0, 8, 0.5, -17)
+avatar.BackgroundColor3 = C.bg3
+avatar.BorderSizePixel = 0
+avatar.Image = "rbxthumb://type=AvatarHeadShot&id=" .. S.LP.UserId .. "&w=150&h=150"
+avatar.Parent = profileFrame
+Instance.new("UICorner", avatar).CornerRadius = UDim.new(1, 0) -- Bulat
+
+-- Nama Player
+local nameLabel = Instance.new("TextLabel")
+nameLabel.Size = UDim2.new(1, -50, 0, 16)
+nameLabel.Position = UDim2.new(0, 46, 0, 8)
+nameLabel.BackgroundTransparency = 1
+nameLabel.Text = S.LP.Name
+nameLabel.TextColor3 = C.text
+nameLabel.TextSize = 11
+nameLabel.Font = F.bold
+nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+nameLabel.TextTruncate = Enum.TextTruncate.AtEnd
+nameLabel.Parent = profileFrame
+
+-- Status / ID
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, -50, 0, 14)
+statusLabel.Position = UDim2.new(0, 46, 0, 24)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "ID: " .. tostring(S.LP.UserId)
+statusLabel.TextColor3 = C.accent
+statusLabel.TextSize = 10
+statusLabel.Font = F.norm
+statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+statusLabel.TextTruncate = Enum.TextTruncate.AtEnd
+statusLabel.Parent = profileFrame
+
+-- Titik Hijau (Status Online)
+local statusDot = Instance.new("Frame")
+statusDot.Size = UDim2.new(0, 8, 0, 8)
+statusDot.Position = UDim2.new(1, -12, 0, 8)
+statusDot.BackgroundColor3 = C.accent
+statusDot.BorderSizePixel = 0
+statusDot.Parent = profileFrame
+Instance.new("UICorner", statusDot).CornerRadius = UDim.new(1, 0)
+
+-- ============================================================
 -- SEARCH FEATURE
 -- ============================================================
 if S.GUI.SearchBox then
