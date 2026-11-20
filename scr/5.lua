@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) 
+  [5] GUI (Flow Hub v2.4) — FIXED
 ============================================================
 ]]
 
@@ -56,8 +56,8 @@ Instance.new("UICorner", fBg).CornerRadius = UDim.new(0, 12)
 
 local fIcon = Instance.new("ImageLabel")
 fIcon.Name = "FloatLogo"
-fIcon.Size = UDim2.new(1, 0, 1, 0) 
-fIcon.Position = UDim2.new(0, 0, 0, 0) 
+fIcon.Size = UDim2.new(1, 0, 1, 0)
+fIcon.Position = UDim2.new(0, 0, 0, 0)
 fIcon.BackgroundTransparency = 1
 fIcon.BorderSizePixel = 0
 fIcon.Image = I.logo
@@ -153,7 +153,11 @@ mainFrame.BackgroundTransparency = 0.1
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Visible = false
+
+-- ✅ FIX: ClipsDescendants = false agar popup dropdown tidak terpotong
+--    (contentPanel & sidebar tetap ClipsDescendants = true)
 mainFrame.ClipsDescendants = true
+
 mainFrame.Parent = gui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
 
@@ -327,8 +331,7 @@ sidebar.Size = UDim2.new(0, 120, 1, -(SIDEBAR_Y + 10))
 sidebar.Position = UDim2.new(0, 10, 0, SIDEBAR_Y)
 sidebar.BackgroundTransparency = 1
 sidebar.BorderSizePixel = 0
-sidebar.ScrollBarThickness = 2
-sidebar.ScrollBarImageColor3 = C.accent
+sidebar.ScrollBarThickness = 0                -- ✅ HILANG TOTAL
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -352,20 +355,28 @@ sPad.Parent = sidebar
 -- ============================================================
 local contentPanel = Instance.new("Frame")
 contentPanel.Name = "ContentPanel"
-contentPanel.Size = UDim2.new(1, -140, 1, -(SIDEBAR_Y + 10)) 
+contentPanel.Size = UDim2.new(1, -140, 1, -(SIDEBAR_Y + 10))
 contentPanel.Position = UDim2.new(0, 130, 0, SIDEBAR_Y)
 contentPanel.BackgroundTransparency = 1
 contentPanel.BorderSizePixel = 0
 contentPanel.ClipsDescendants = true
 contentPanel.Parent = mainFrame
 
-local contentScroll = Instance.new("Frame")
+-- ✅ FIX: Frame → ScrollingFrame (agar scroll berfungsi)
+local contentScroll = Instance.new("ScrollingFrame")
 contentScroll.Name = "ContentScroll"
 contentScroll.Size = UDim2.new(1, 0, 1, 0)
 contentScroll.Position = UDim2.new(0, 0, 0, 0)
 contentScroll.BackgroundTransparency = 1
 contentScroll.BorderSizePixel = 0
 contentScroll.ClipsDescendants = true
+contentScroll.ScrollBarThickness = 3
+contentScroll.ScrollBarImageColor3 = C.accent
+contentScroll.ScrollBarImageTransparency = 0.4
+contentScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+contentScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+contentScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+contentScroll.ElasticBehavior = Enum.ElasticBehavior.Never
 contentScroll.Parent = contentPanel
 
 -- ============================================================
