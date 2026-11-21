@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [6] LIBRARY (Flow Hub v2.4) — FIXED NO OVERLAP + F.NORM
+  [6] LIBRARY (Flow Hub v2.4) — LYNX STYLE (SEARCH SELALU ADA)
 ============================================================
 ]]
 
@@ -14,11 +14,17 @@ local HEADER_H = 30
 local CARD_BG = C.bg3
 local CARD_TRANS = 0.15
 
+-- ============================================================
+-- SERVICES (fallback)
+-- ============================================================
 local TS  = (S.Services and S.Services.TS)  or game:GetService("TweenService")
 local UIS = (S.Services and S.Services.UIS) or game:GetService("UserInputService")
 local Run = (S.Services and S.Services.Run) or game:GetService("RunService")
 
-local ToggleRegistry = {}
+-- ============================================================
+-- REGISTRY
+-- ============================================================
+local ToggleRegistry   = {}
 local DropdownRegistry = {}
 
 function Lib.RefreshAll()
@@ -43,7 +49,7 @@ function Lib.RefreshAllDropdowns()
 end
 
 -- ============================================================
--- HELPER: Recalculate section height (Anti-Loop)
+-- HELPER: Recalculate section height
 -- ============================================================
 local recalcGuard = {}
 
@@ -99,9 +105,12 @@ function Lib.makeSection(parent, title, defaultOpen)
     local header = Instance.new("TextButton")
     header.Name = "Header"
     header.Size = UDim2.new(1, 0, 0, HEADER_H)
+    header.Position = UDim2.new(0, 0, 0, 0)
     header.Text = ""
     header.BackgroundTransparency = 1
+    header.BorderSizePixel = 0
     header.AutoButtonColor = false
+    header.ZIndex = 2
     header.Parent = card
 
     local titleLbl = Instance.new("TextLabel")
@@ -109,10 +118,11 @@ function Lib.makeSection(parent, title, defaultOpen)
     titleLbl.Position = UDim2.new(0, 12, 0, 0)
     titleLbl.Text = title
     titleLbl.TextColor3 = C.text
-    titleLbl.TextSize = 10
-    titleLbl.Font = F.norm -- Konsisten F.norm
+    titleLbl.TextSize = 11
+    titleLbl.Font = F.bold
     titleLbl.TextXAlignment = Enum.TextXAlignment.Left
     titleLbl.BackgroundTransparency = 1
+    titleLbl.ZIndex = 3
     titleLbl.Parent = header
 
     local arrow = Instance.new("TextLabel")
@@ -122,8 +132,9 @@ function Lib.makeSection(parent, title, defaultOpen)
     arrow.Text = defaultOpen and "▼" or "▶"
     arrow.TextColor3 = C.accent
     arrow.TextSize = 10
-    arrow.Font = F.norm
+    arrow.Font = F.bold
     arrow.BackgroundTransparency = 1
+    arrow.ZIndex = 3
     arrow.Parent = header
 
     local content = Instance.new("Frame")
@@ -133,6 +144,7 @@ function Lib.makeSection(parent, title, defaultOpen)
     content.BackgroundTransparency = 1
     content.ClipsDescendants = false
     content.Visible = defaultOpen
+    content.ZIndex = 2
     content.Parent = card
 
     local contentLayout = Instance.new("UIListLayout")
@@ -171,6 +183,7 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
     f.Name = "Toggle_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
     f.BackgroundTransparency = 1
+    f.BorderSizePixel = 0
     f.Parent = parent
 
     local l = Instance.new("TextLabel")
@@ -179,7 +192,7 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
     l.Text = name
     l.TextColor3 = C.text
     l.TextSize = 10
-    l.Font = F.norm
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -242,6 +255,7 @@ function Lib.makeInput(parent, name, default, callback)
     f.Name = "Input_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
     f.BackgroundTransparency = 1
+    f.BorderSizePixel = 0
     f.Parent = parent
 
     local l = Instance.new("TextLabel")
@@ -250,7 +264,7 @@ function Lib.makeInput(parent, name, default, callback)
     l.Text = name
     l.TextColor3 = C.text
     l.TextSize = 10
-    l.Font = F.norm
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -258,11 +272,11 @@ function Lib.makeInput(parent, name, default, callback)
     local b = Instance.new("TextBox")
     b.AnchorPoint = Vector2.new(1, 0.5)
     b.Position = UDim2.new(1, -12, 0.5, 0)
-    b.Size = UDim2.new(0.20, 0, 0, 22)
+    b.Size = UDim2.new(0.20, 0, 0, 20)
     b.Text = tostring(default)
     b.TextColor3 = C.text
     b.TextSize = 10
-    b.Font = F.norm
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -289,6 +303,7 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     f.Name = "TextInput_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
     f.BackgroundTransparency = 1
+    f.BorderSizePixel = 0
     f.Parent = parent
 
     local l = Instance.new("TextLabel")
@@ -297,7 +312,7 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     l.Text = name
     l.TextColor3 = C.text
     l.TextSize = 10
-    l.Font = F.norm
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -306,13 +321,13 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     b.Name = "TextBox"
     b.AnchorPoint = Vector2.new(1, 0.5)
     b.Position = UDim2.new(1, -12, 0.5, 0)
-    b.Size = UDim2.new(0.48, 0, 0, 22)
+    b.Size = UDim2.new(0.48, 0, 0, 20)
     b.Text = tostring(default or "")
     b.PlaceholderText = placeholder or ""
     b.PlaceholderColor3 = C.textDim2
     b.TextColor3 = C.text
     b.TextSize = 10
-    b.Font = F.norm
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -340,7 +355,7 @@ function Lib.makeButton(parent, name, callback, noHover)
     b.Text = name
     b.TextColor3 = C.text
     b.TextSize = 10
-    b.Font = F.norm
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BackgroundTransparency = 0.3
     b.BorderSizePixel = 0
@@ -388,8 +403,10 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN (100% FIXED - MENGUNCI AREA KONTEN)
+-- DROPDOWN (VD.LUA STYLE - 160PX, SEARCH SELALU ADA)
 -- ============================================================
+local PANEL_W = 160
+local PANEL_PAD = 8
 local TWEEN_IN  = TweenInfo.new(0.24, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 local TWEEN_OUT = TweenInfo.new(0.18, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
 
@@ -398,20 +415,12 @@ local SlidePanel = {
     active = nil, count = 0, activeTween = nil, initialized = false,
 }
 
--- Fungsi untuk mencari letak area konten Flow secara otomatis
-local function getContentArea()
-    if not S.GUI or not S.GUI.MainFrame then return nil end
-    return S.GUI.MainFrame:FindFirstChild("Content") 
-        or S.GUI.MainFrame:FindFirstChild("ContentArea") 
-        or S.GUI.MainFrame:FindFirstChild("PageHolder")
-        or S.GUI.MainFrame:FindFirstChild("Container")
+local function slideClosedPos() 
+    return UDim2.new(1, PANEL_W + 4, 0.5, 0)
 end
 
-local function slideClosedPos() 
-    return UDim2.new(1, 4, 0.5, 0) -- Sembunyi di luar kanan
-end
 local function slideOpenPos() 
-    return UDim2.new(1, -4, 0.5, 0) -- Buka (menyisakan jarak 4px)
+    return UDim2.new(1, -11, 0.5, 0)
 end
 
 local function initSlidePanel()
@@ -419,16 +428,13 @@ local function initSlidePanel()
     SlidePanel.initialized = true
 
     local mainFrame = S.GUI.MainFrame
-    local contentArea = getContentArea()
-    
-    -- 🔥 KUNCI UTAMA: Taruh panel di ContentArea, bukan MainFrame
-    local parentFrame = contentArea or mainFrame
 
     local overlay = Instance.new("TextButton")
     overlay.Name = "SlideOverlay"
     overlay.Size = UDim2.new(1, 0, 1, 0)
     overlay.BackgroundColor3 = Color3.new(0, 0, 0)
     overlay.BackgroundTransparency = 1
+    overlay.BorderSizePixel = 0
     overlay.Text = ""
     overlay.AutoButtonColor = false
     overlay.Visible = false
@@ -442,16 +448,14 @@ local function initSlidePanel()
     local panel = Instance.new("Frame")
     panel.Name = "SlidePanel"
     panel.AnchorPoint = Vector2.new(1, 0.5)
-    
-    -- Lebar 160px, tapi kalau areanya sempit, ambil maksimal lebar area
-    panel.Size = UDim2.new(0, 160, 1, -16) 
+    panel.Size = UDim2.new(0, PANEL_W, 1, -16)
     panel.Position = slideClosedPos()
     panel.BackgroundColor3 = C.bg2
-    panel.BackgroundTransparency = 0.05
+    panel.BackgroundTransparency = 0.05 
     panel.BorderSizePixel = 0
     panel.ClipsDescendants = true
     panel.ZIndex = 152
-    panel.Parent = parentFrame
+    panel.Parent = mainFrame
     Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 6)
     
     local pStroke = Instance.new("UIStroke")
@@ -540,6 +544,8 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     f.Name = "Dropdown_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
     f.BackgroundTransparency = 1
+    f.BorderSizePixel = 0
+    f.ClipsDescendants = false
     f.Parent = parent
 
     local lbl = Instance.new("TextLabel")
@@ -548,7 +554,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     lbl.Text = name
     lbl.TextColor3 = C.text
     lbl.TextSize = 10
-    lbl.Font = F.norm
+    lbl.Font = F.bold
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.BackgroundTransparency = 1
     lbl.Parent = f
@@ -579,7 +585,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     optionLabel.Text = "Select..."
     optionLabel.TextColor3 = C.textDim
     optionLabel.TextSize = 10
-    optionLabel.Font = F.norm
+    optionLabel.Font = F.bold
     optionLabel.TextXAlignment = Enum.TextXAlignment.Left
     optionLabel.TextTruncate = Enum.TextTruncate.AtEnd
     optionLabel.BackgroundTransparency = 1
@@ -616,6 +622,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     container.LayoutOrder = layoutOrder
     container.Parent = SlidePanel.folder
 
+    -- ✅ Sesuai vd.lua: Search bar SELALU muncul
     local searchBox = Instance.new("TextBox")
     searchBox.Name = "SearchBox"
     searchBox.Size = UDim2.new(1, -8, 0, 24)
@@ -641,6 +648,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
     local scrollSelect = Instance.new("ScrollingFrame")
     scrollSelect.Name = "OptionsList"
+    -- ✅ Karena search selalu ada, ukuran list selalu dikurangi (1, -36)
     scrollSelect.Size = UDim2.new(1, -8, 1, -36)
     scrollSelect.Position = UDim2.new(0, 4, 0, 32)
     scrollSelect.BackgroundTransparency = 1
@@ -742,7 +750,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 optLbl.Text = opt.label
                 optLbl.TextColor3 = isSelected and C.text or C.textDim
                 optLbl.TextSize = 10
-                optLbl.Font = isSelected and F.norm or F.norm
+                optLbl.Font = isSelected and F.bold or F.norm
                 optLbl.TextXAlignment = Enum.TextXAlignment.Left
                 optLbl.TextTruncate = Enum.TextTruncate.AtEnd
                 optLbl.BackgroundTransparency = 1
@@ -855,7 +863,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 end
 
 -- ============================================================
--- RESIZE HANDLE
+-- RESIZE HANDLE (Bawaan Flow)
 -- ============================================================
 function Lib.attachResizeHandle(mainFrame)
     if not mainFrame or not mainFrame.Parent then return end
