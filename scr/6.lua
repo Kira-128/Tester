@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [6] LIBRARY (Flow Hub v2.4) — FIXED & STABLE
+  [6] LIBRARY (Flow Hub v2.4) — LYNX STYLE (SEARCH SELALU ADA)
 ============================================================
 ]]
 
@@ -14,15 +14,17 @@ local HEADER_H = 30
 local CARD_BG = C.bg3
 local CARD_TRANS = 0.15
 
--- Services Fallback
+-- ============================================================
+-- SERVICES (fallback)
+-- ============================================================
 local TS  = (S.Services and S.Services.TS)  or game:GetService("TweenService")
 local UIS = (S.Services and S.Services.UIS) or game:GetService("UserInputService")
 local Run = (S.Services and S.Services.Run) or game:GetService("RunService")
 
 -- ============================================================
--- REGISTRY (Untuk Refresh Config)
+-- REGISTRY
 -- ============================================================
-local ToggleRegistry = {}
+local ToggleRegistry   = {}
 local DropdownRegistry = {}
 
 function Lib.RefreshAll()
@@ -47,7 +49,7 @@ function Lib.RefreshAllDropdowns()
 end
 
 -- ============================================================
--- HELPER: Recalculate section height (Anti-Loop)
+-- HELPER: Recalculate section height
 -- ============================================================
 local recalcGuard = {}
 
@@ -189,8 +191,8 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 11
-    l.Font = F.norm
+    l.TextSize = 10
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -233,7 +235,6 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
     if configPath then
         local entry = { path = configPath, setState = setState }
         table.insert(ToggleRegistry, entry)
-
         f.Destroying:Connect(function()
             for i = #ToggleRegistry, 1, -1 do
                 if ToggleRegistry[i] == entry then
@@ -247,7 +248,7 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
 end
 
 -- ============================================================
--- INPUT (Number)
+-- INPUT (NUMBER)
 -- ============================================================
 function Lib.makeInput(parent, name, default, callback)
     local f = Instance.new("Frame")
@@ -262,8 +263,8 @@ function Lib.makeInput(parent, name, default, callback)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 11
-    l.Font = F.norm
+    l.TextSize = 10
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -271,11 +272,11 @@ function Lib.makeInput(parent, name, default, callback)
     local b = Instance.new("TextBox")
     b.AnchorPoint = Vector2.new(1, 0.5)
     b.Position = UDim2.new(1, -12, 0.5, 0)
-    b.Size = UDim2.new(0.20, 0, 0, 22)
+    b.Size = UDim2.new(0.20, 0, 0, 20)
     b.Text = tostring(default)
     b.TextColor3 = C.text
-    b.TextSize = 11
-    b.Font = F.norm
+    b.TextSize = 10
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -310,8 +311,8 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 11
-    l.Font = F.norm
+    l.TextSize = 10
+    l.Font = F.bold
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -320,13 +321,13 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     b.Name = "TextBox"
     b.AnchorPoint = Vector2.new(1, 0.5)
     b.Position = UDim2.new(1, -12, 0.5, 0)
-    b.Size = UDim2.new(0.48, 0, 0, 22)
+    b.Size = UDim2.new(0.48, 0, 0, 20)
     b.Text = tostring(default or "")
     b.PlaceholderText = placeholder or ""
     b.PlaceholderColor3 = C.textDim2
     b.TextColor3 = C.text
-    b.TextSize = 11
-    b.Font = F.norm
+    b.TextSize = 10
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -353,8 +354,8 @@ function Lib.makeButton(parent, name, callback, noHover)
     b.Position = UDim2.new(0, 6, 0.5, -(ITEM_H - 8) / 2)
     b.Text = name
     b.TextColor3 = C.text
-    b.TextSize = 11
-    b.Font = F.norm
+    b.TextSize = 10
+    b.Font = F.bold
     b.BackgroundColor3 = C.bg4
     b.BackgroundTransparency = 0.3
     b.BorderSizePixel = 0
@@ -402,7 +403,7 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN (FIXED - POSISI TENGAH & TIDAK MENEMBUS HEADER)
+-- DROPDOWN (VD.LUA STYLE - 160PX, SEARCH SELALU ADA)
 -- ============================================================
 local PANEL_W = 160
 local PANEL_PAD = 8
@@ -415,11 +416,10 @@ local SlidePanel = {
 }
 
 local function slideClosedPos() 
-    -- Posisi Y = 0.5 (Tengah Vertikal)
     return UDim2.new(1, PANEL_W + 4, 0.5, 0)
 end
+
 local function slideOpenPos() 
-    -- Posisi Y = 0.5 (Tengah Vertikal), X = -11 (Jarak dari kanan)
     return UDim2.new(1, -11, 0.5, 0)
 end
 
@@ -429,7 +429,6 @@ local function initSlidePanel()
 
     local mainFrame = S.GUI.MainFrame
 
-    -- Overlay transparan (area klik luar)
     local overlay = Instance.new("TextButton")
     overlay.Name = "SlideOverlay"
     overlay.Size = UDim2.new(1, 0, 1, 0)
@@ -446,14 +445,13 @@ local function initSlidePanel()
     end)
     SlidePanel.overlay = overlay
 
-    -- Panel Kanan
     local panel = Instance.new("Frame")
     panel.Name = "SlidePanel"
-    panel.AnchorPoint = Vector2.new(1, 0.5) -- 🔥 FIX: AnchorPoint ke Tengah Vertikal
-    panel.Size = UDim2.new(0, PANEL_W, 1, -16) -- 🔥 FIX: Tinggi full dikurangi 16px
+    panel.AnchorPoint = Vector2.new(1, 0.5)
+    panel.Size = UDim2.new(0, PANEL_W, 1, -16)
     panel.Position = slideClosedPos()
     panel.BackgroundColor3 = C.bg2
-    panel.BackgroundTransparency = 0.09 -- 🔥 FIX: Dibuat lebih solid
+    panel.BackgroundTransparency = 0.05 
     panel.BorderSizePixel = 0
     panel.ClipsDescendants = true
     panel.ZIndex = 152
@@ -467,7 +465,6 @@ local function initSlidePanel()
     pStroke.Parent = panel
     SlidePanel.panel = panel
 
-    -- Folder Halaman
     local folder = Instance.new("Frame")
     folder.Name = "SlideFolder"
     folder.Size = UDim2.new(1, -2, 1, 0)
@@ -478,7 +475,6 @@ local function initSlidePanel()
     folder.Parent = panel
     SlidePanel.folder = folder
 
-    -- Page Layout (untuk transisi antar dropdown)
     local pageLayout = Instance.new("UIPageLayout")
     pageLayout.EasingDirection = Enum.EasingDirection.InOut
     pageLayout.EasingStyle = Enum.EasingStyle.Quad
@@ -544,7 +540,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     local layoutOrder = SlidePanel.count
     SlidePanel.count += 1
 
-    -- Baris Dropdown
     local f = Instance.new("Frame")
     f.Name = "Dropdown_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
@@ -564,7 +559,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     lbl.BackgroundTransparency = 1
     lbl.Parent = f
 
-    -- Tombol Dropdown
     local dropdownBtn = Instance.new("TextButton")
     dropdownBtn.Name = "Button_" .. name
     dropdownBtn.AnchorPoint = Vector2.new(1, 0.5)
@@ -621,7 +615,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         }):Play()
     end)
 
-    -- Page Container
     local container = Instance.new("Frame")
     container.Name = "Page_" .. name
     container.Size = UDim2.new(1, 0, 1, 0)
@@ -629,9 +622,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     container.LayoutOrder = layoutOrder
     container.Parent = SlidePanel.folder
 
-    local showSearch = #initialOptions > 6
-
-    -- Search Box
+    -- ✅ Sesuai vd.lua: Search bar SELALU muncul
     local searchBox = Instance.new("TextBox")
     searchBox.Name = "SearchBox"
     searchBox.Size = UDim2.new(1, -8, 0, 24)
@@ -647,26 +638,26 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchBox.BorderSizePixel = 0
     searchBox.TextXAlignment = Enum.TextXAlignment.Left
     searchBox.ClearTextOnFocus = false
-    searchBox.Visible = showSearch
-    searchBox.ZIndex = 155 -- 🔥 FIX: ZIndex dinaikkan
+    searchBox.Visible = true
+    searchBox.ZIndex = 155
     searchBox.Parent = container
     Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 4)
     local searchPad = Instance.new("UIPadding")
     searchPad.PaddingLeft = UDim.new(0, 8)
     searchPad.Parent = searchBox
 
-    -- Scroll List
     local scrollSelect = Instance.new("ScrollingFrame")
     scrollSelect.Name = "OptionsList"
-    scrollSelect.Size = showSearch and UDim2.new(1, -8, 1, -36) or UDim2.new(1, -8, 1, -8)
-    scrollSelect.Position = showSearch and UDim2.new(0, 4, 0, 32) or UDim2.new(0, 4, 0, 4)
+    -- ✅ Karena search selalu ada, ukuran list selalu dikurangi (1, -36)
+    scrollSelect.Size = UDim2.new(1, -8, 1, -36)
+    scrollSelect.Position = UDim2.new(0, 4, 0, 32)
     scrollSelect.BackgroundTransparency = 1
     scrollSelect.BorderSizePixel = 0
     scrollSelect.ScrollBarThickness = 0
     scrollSelect.CanvasSize = UDim2.new(0, 0, 0, 0)
     scrollSelect.AutomaticCanvasSize = Enum.AutomaticSize.Y
     scrollSelect.ScrollingDirection = Enum.ScrollingDirection.Y
-    scrollSelect.ZIndex = 154 -- 🔥 FIX: ZIndex lebih rendah dari search
+    scrollSelect.ZIndex = 154
     scrollSelect.Parent = container
 
     local listLayout = Instance.new("UIListLayout")
@@ -733,7 +724,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 local row = Instance.new("TextButton")
                 row.Size = UDim2.new(1, 0, 0, 26)
                 row.BackgroundColor3 = isSelected and C.bg3 or C.bg2
-                row.BackgroundTransparency = isSelected and 0.1 or 0.5
+                row.BackgroundTransparency = isSelected and 0.1 or 1
                 row.BorderSizePixel = 0
                 row.Text = ""
                 row.AutoButtonColor = false
@@ -770,7 +761,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                     if not isSelected then
                         TS:Create(row, TweenInfo.new(0.12), {
                             BackgroundColor3 = C.bg3,
-                            BackgroundTransparency = 0.4
+                            BackgroundTransparency = 0.5
                         }):Play()
                     end
                 end)
@@ -778,7 +769,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                     if not isSelected then
                         TS:Create(row, TweenInfo.new(0.12), {
                             BackgroundColor3 = C.bg2,
-                            BackgroundTransparency = 0.5
+                            BackgroundTransparency = 1
                         }):Play()
                     end
                 end)
@@ -870,11 +861,9 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
     return component
 end
-   
-    
 
 -- ============================================================
--- RESIZE HANDLE
+-- RESIZE HANDLE (Bawaan Flow)
 -- ============================================================
 function Lib.attachResizeHandle(mainFrame)
     if not mainFrame or not mainFrame.Parent then return end
