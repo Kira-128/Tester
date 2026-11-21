@@ -402,12 +402,12 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN (PANEL SLIDE-IN 160PX)
+-- DROPDOWN (FIXED - POSISI TENGAH & TIDAK MENEMBUS HEADER)
 -- ============================================================
 local PANEL_W = 160
 local PANEL_PAD = 8
-local TWEEN_IN  = TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-local TWEEN_OUT = TweenInfo.new(0.20, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+local TWEEN_IN  = TweenInfo.new(0.24, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+local TWEEN_OUT = TweenInfo.new(0.18, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
 
 local SlidePanel = {
     overlay = nil, panel = nil, folder = nil, pageLayout = nil,
@@ -415,10 +415,12 @@ local SlidePanel = {
 }
 
 local function slideClosedPos() 
-    return UDim2.new(1, PANEL_W + 4, 0, 0)
+    -- Posisi Y = 0.5 (Tengah Vertikal)
+    return UDim2.new(1, PANEL_W + 4, 0.5, 0)
 end
 local function slideOpenPos() 
-    return UDim2.new(1, -PANEL_PAD, 0, 0)
+    -- Posisi Y = 0.5 (Tengah Vertikal), X = -11 (Jarak dari kanan)
+    return UDim2.new(1, -11, 0.5, 0)
 end
 
 local function initSlidePanel()
@@ -427,6 +429,7 @@ local function initSlidePanel()
 
     local mainFrame = S.GUI.MainFrame
 
+    -- Overlay transparan (area klik luar)
     local overlay = Instance.new("TextButton")
     overlay.Name = "SlideOverlay"
     overlay.Size = UDim2.new(1, 0, 1, 0)
@@ -443,35 +446,39 @@ local function initSlidePanel()
     end)
     SlidePanel.overlay = overlay
 
+    -- Panel Kanan
     local panel = Instance.new("Frame")
     panel.Name = "SlidePanel"
-    panel.AnchorPoint = Vector2.new(1, 0)
-    panel.Size = UDim2.new(0, PANEL_W, 1, 0) 
+    panel.AnchorPoint = Vector2.new(1, 0.5) -- 🔥 FIX: AnchorPoint ke Tengah Vertikal
+    panel.Size = UDim2.new(0, PANEL_W, 1, -16) -- 🔥 FIX: Tinggi full dikurangi 16px
     panel.Position = slideClosedPos()
     panel.BackgroundColor3 = C.bg2
-    panel.BackgroundTransparency = 0.05
+    panel.BackgroundTransparency = 0.09 -- 🔥 FIX: Dibuat lebih solid
     panel.BorderSizePixel = 0
     panel.ClipsDescendants = true
     panel.ZIndex = 152
     panel.Parent = mainFrame
-    Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 6)
     
     local pStroke = Instance.new("UIStroke")
     pStroke.Color = C.stroke
     pStroke.Thickness = 1
-    pStroke.Transparency = 0.5
+    pStroke.Transparency = 0.45
     pStroke.Parent = panel
     SlidePanel.panel = panel
 
+    -- Folder Halaman
     local folder = Instance.new("Frame")
     folder.Name = "SlideFolder"
-    folder.Size = UDim2.new(1, 0, 1, 0)
+    folder.Size = UDim2.new(1, -2, 1, 0)
+    folder.Position = UDim2.new(0, 1, 0, 1)
     folder.BackgroundTransparency = 1
     folder.ClipsDescendants = true
     folder.ZIndex = 153
     folder.Parent = panel
     SlidePanel.folder = folder
 
+    -- Page Layout (untuk transisi antar dropdown)
     local pageLayout = Instance.new("UIPageLayout")
     pageLayout.EasingDirection = Enum.EasingDirection.InOut
     pageLayout.EasingStyle = Enum.EasingStyle.Quad
@@ -537,6 +544,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     local layoutOrder = SlidePanel.count
     SlidePanel.count += 1
 
+    -- Baris Dropdown
     local f = Instance.new("Frame")
     f.Name = "Dropdown_" .. name
     f.Size = UDim2.new(1, 0, 0, ITEM_H)
@@ -550,12 +558,13 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     lbl.Position = UDim2.new(0, 12, 0, 0)
     lbl.Text = name
     lbl.TextColor3 = C.text
-    lbl.TextSize = 11
+    lbl.TextSize = 10
     lbl.Font = F.bold
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.BackgroundTransparency = 1
     lbl.Parent = f
 
+    -- Tombol Dropdown
     local dropdownBtn = Instance.new("TextButton")
     dropdownBtn.Name = "Button_" .. name
     dropdownBtn.AnchorPoint = Vector2.new(1, 0.5)
@@ -612,6 +621,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
         }):Play()
     end)
 
+    -- Page Container
     local container = Instance.new("Frame")
     container.Name = "Page_" .. name
     container.Size = UDim2.new(1, 0, 1, 0)
@@ -621,6 +631,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
     local showSearch = #initialOptions > 6
 
+    -- Search Box
     local searchBox = Instance.new("TextBox")
     searchBox.Name = "SearchBox"
     searchBox.Size = UDim2.new(1, -8, 0, 24)
@@ -637,27 +648,25 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchBox.TextXAlignment = Enum.TextXAlignment.Left
     searchBox.ClearTextOnFocus = false
     searchBox.Visible = showSearch
-    searchBox.ZIndex = 154
+    searchBox.ZIndex = 155 -- 🔥 FIX: ZIndex dinaikkan
     searchBox.Parent = container
     Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 4)
     local searchPad = Instance.new("UIPadding")
     searchPad.PaddingLeft = UDim.new(0, 8)
     searchPad.Parent = searchBox
 
+    -- Scroll List
     local scrollSelect = Instance.new("ScrollingFrame")
     scrollSelect.Name = "OptionsList"
     scrollSelect.Size = showSearch and UDim2.new(1, -8, 1, -36) or UDim2.new(1, -8, 1, -8)
     scrollSelect.Position = showSearch and UDim2.new(0, 4, 0, 32) or UDim2.new(0, 4, 0, 4)
     scrollSelect.BackgroundTransparency = 1
     scrollSelect.BorderSizePixel = 0
-    scrollSelect.ScrollBarThickness = 3
-    scrollSelect.ScrollBarImageColor3 = C.accent
-    scrollSelect.ScrollBarImageTransparency = 0.4
+    scrollSelect.ScrollBarThickness = 0
     scrollSelect.CanvasSize = UDim2.new(0, 0, 0, 0)
     scrollSelect.AutomaticCanvasSize = Enum.AutomaticSize.Y
     scrollSelect.ScrollingDirection = Enum.ScrollingDirection.Y
-    scrollSelect.ElasticBehavior = Enum.ElasticBehavior.Never
-    scrollSelect.ZIndex = 154
+    scrollSelect.ZIndex = 154 -- 🔥 FIX: ZIndex lebih rendah dari search
     scrollSelect.Parent = container
 
     local listLayout = Instance.new("UIListLayout")
@@ -722,9 +731,9 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 local isSelected = (opt.value == currentValue)
 
                 local row = Instance.new("TextButton")
-                row.Size = UDim2.new(1, -6, 0, 26)
+                row.Size = UDim2.new(1, 0, 0, 26)
                 row.BackgroundColor3 = isSelected and C.bg3 or C.bg2
-                row.BackgroundTransparency = isSelected and 0.2 or 0.5
+                row.BackgroundTransparency = isSelected and 0.1 or 0.5
                 row.BorderSizePixel = 0
                 row.Text = ""
                 row.AutoButtonColor = false
@@ -736,7 +745,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 if isSelected then
                     local accentBar = Instance.new("Frame")
                     accentBar.Size = UDim2.new(0, 3, 0, 16)
-                    accentBar.Position = UDim2.new(0, 2, 0.5, -8)
+                    accentBar.Position = UDim2.new(0, 0, 0.5, -8)
                     accentBar.BackgroundColor3 = C.accent
                     accentBar.BorderSizePixel = 0
                     accentBar.ZIndex = 156
@@ -746,9 +755,9 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
                 local optLbl = Instance.new("TextLabel")
                 optLbl.Size = UDim2.new(1, -16, 1, 0)
-                optLbl.Position = UDim2.new(0, isSelected and 10 or 8, 0, 0)
+                optLbl.Position = UDim2.new(0, 10, 0, 0)
                 optLbl.Text = opt.label
-                optLbl.TextColor3 = isSelected and C.accent or C.textDim
+                optLbl.TextColor3 = isSelected and C.text or C.textDim
                 optLbl.TextSize = 10
                 optLbl.Font = isSelected and F.bold or F.norm
                 optLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -761,7 +770,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                     if not isSelected then
                         TS:Create(row, TweenInfo.new(0.12), {
                             BackgroundColor3 = C.bg3,
-                            BackgroundTransparency = 0.3
+                            BackgroundTransparency = 0.4
                         }):Play()
                     end
                 end)
@@ -861,6 +870,8 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
     return component
 end
+   
+    
 
 -- ============================================================
 -- RESIZE HANDLE
