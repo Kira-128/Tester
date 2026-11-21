@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — FIXED
+  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE
 ============================================================
 ]]
 
@@ -86,7 +86,6 @@ local function disconnectIconConns()
     end
 end
 
--- 1. DETEKSI AWAL
 iconConns[#iconConns + 1] = floatBtn.InputBegan:Connect(function(input)
     if iconDragging then return end
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -97,7 +96,6 @@ iconConns[#iconConns + 1] = floatBtn.InputBegan:Connect(function(input)
     end
 end)
 
--- 2. DETEKSI PERGERAKAN
 iconConns[#iconConns + 1] = UIS.InputChanged:Connect(function(input)
     if not iconDragging or not floatBtn or not floatBtn.Parent or not iconStartPos or not iconDragStart then return end
     if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
@@ -112,7 +110,6 @@ iconConns[#iconConns + 1] = UIS.InputChanged:Connect(function(input)
     end
 end)
 
--- 3. DETEKSI LEPAS
 iconConns[#iconConns + 1] = UIS.InputEnded:Connect(function(input)
     if not iconDragging then return end
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -137,14 +134,12 @@ _G.FlowHubSavedIconPos = savedIconPos
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 
--- 🔥 UKURAN KHUSUS PC & HP
 if isMobile then
-    mainFrame.Size = UDim2.new(0, 450, 0, 300) -- Ukuran HP
+    mainFrame.Size = UDim2.new(0, 450, 0, 300)
 else
-    mainFrame.Size = UDim2.new(0, 560, 0, 360) -- Ukuran PC
+    mainFrame.Size = UDim2.new(0, 560, 0, 360)
 end
 
--- Biar posisinya selalu di tengah
 local startSize = mainFrame.Size
 mainFrame.Position = UDim2.new(0.5, -(startSize.X.Offset / 2), 0.5, -(startSize.Y.Offset / 2))
 
@@ -153,11 +148,7 @@ mainFrame.BackgroundTransparency = 0.1
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Visible = false
-
--- ✅ FIX: ClipsDescendants = false agar popup dropdown tidak terpotong
---    (contentPanel & sidebar tetap ClipsDescendants = true)
 mainFrame.ClipsDescendants = true
-
 mainFrame.Parent = gui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
 
@@ -168,60 +159,62 @@ mStroke.Transparency = 0.3
 mStroke.Parent = mainFrame
 
 -- ============================================================
--- HEADER
+-- HEADER (LYNX STYLE - TRANSPARAN & TIPIS)
 -- ============================================================
-local HEADER_H = 36
+local HEADER_H = 34
 
-local header = Instance.new("Frame")
+local header = Instance.new("TextButton")
 header.Name = "Header"
 header.Size = UDim2.new(1, 0, 0, HEADER_H)
-header.BackgroundColor3 = C.bg2
-header.BackgroundTransparency = 0.1
-header.BorderSizePixel = 0
+header.BackgroundTransparency = 1 -- Transparan khas Lynx
+header.Text = ""
+header.AutoButtonColor = false
 header.Active = true
 header.Parent = mainFrame
-Instance.new("UICorner", header).CornerRadius = UDim.new(0, 8)
 
-local hFix = Instance.new("Frame")
-hFix.Size = UDim2.new(1, 0, 0, 15)
-hFix.Position = UDim2.new(0, 0, 1, -15)
-hFix.BackgroundColor3 = C.bg2
-hFix.BackgroundTransparency = 0.1
-hFix.BorderSizePixel = 0
-hFix.Parent = header
+-- Garis tipis di bawah header
+local hLine = Instance.new("Frame")
+hLine.Size = UDim2.new(1, -20, 0, 1)
+hLine.Position = UDim2.new(0, 10, 1, -1)
+hLine.BackgroundColor3 = C.stroke
+hLine.BackgroundTransparency = 0.4
+hLine.BorderSizePixel = 0
+hLine.Parent = header
 
+-- Teks "Flow"
 local lText = Instance.new("TextLabel")
 lText.Size = UDim2.new(0, 60, 1, 0)
 lText.Position = UDim2.new(0, 12, 0, 0)
 lText.Text = "Flow"
 lText.TextColor3 = C.accent
-lText.TextSize = 13
+lText.TextSize = 14
 lText.Font = F.bold
 lText.TextXAlignment = Enum.TextXAlignment.Left
 lText.BackgroundTransparency = 1
 lText.Parent = header
 
+-- Ikon di samping teks
 local lIcon = Instance.new("ImageLabel")
-lIcon.Name = "LogoHeader"
-lIcon.Size = UDim2.new(0, 18, 0, 18)
-lIcon.Position = UDim2.new(0, 52, 0.5, -9)
+lIcon.Size = UDim2.new(0, 16, 0, 16)
+lIcon.Position = UDim2.new(0, 48, 0.5, -8)
 lIcon.BackgroundTransparency = 1
-lIcon.BorderSizePixel = 0
 lIcon.Image = I.icon
 lIcon.ImageColor3 = C.accent
 lIcon.ScaleType = Enum.ScaleType.Fit
 lIcon.Parent = header
 
+-- Garis pemisah vertikal
 local sep = Instance.new("Frame")
-sep.Size = UDim2.new(0, 1, 0, 18)
-sep.Position = UDim2.new(0, 78, 0.5, -9)
+sep.Size = UDim2.new(0, 1, 0, 16)
+sep.Position = UDim2.new(0, 74, 0.5, -8)
 sep.BackgroundColor3 = C.stroke
 sep.BorderSizePixel = 0
 sep.Parent = header
 
+-- Subtitle
 local sub = Instance.new("TextLabel")
 sub.Size = UDim2.new(0, 200, 1, 0)
-sub.Position = UDim2.new(0, 88, 0, 0)
+sub.Position = UDim2.new(0, 84, 0, 0)
 sub.Text = "Command An Army"
 sub.TextColor3 = C.textDim
 sub.TextSize = 10
@@ -230,6 +223,7 @@ sub.TextXAlignment = Enum.TextXAlignment.Left
 sub.BackgroundTransparency = 1
 sub.Parent = header
 
+-- Tombol Minimize
 local minBtn = Instance.new("TextButton")
 minBtn.Size = UDim2.new(0, 22, 0, 22)
 minBtn.Position = UDim2.new(1, -30, 0.5, -11)
@@ -238,14 +232,12 @@ minBtn.TextColor3 = C.accent
 minBtn.TextSize = 14
 minBtn.Font = F.bold
 minBtn.BackgroundColor3 = C.bg3
-minBtn.BackgroundTransparency = 0.2
+minBtn.BackgroundTransparency = 0.5
 minBtn.BorderSizePixel = 0
 minBtn.Parent = header
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
 
--- ============================================================
--- GARIS 1
--- ============================================================
+-- Garis pembatas Full Width (di bawah header)
 local line1 = Instance.new("Frame")
 line1.Name = "HeaderLine"
 line1.Size = UDim2.new(1, 0, 0, 1)
@@ -256,7 +248,7 @@ line1.BorderSizePixel = 0
 line1.Parent = mainFrame
 
 -- ============================================================
--- SEARCH + TITLE + ACCENT LINE + GARIS 2
+-- SEARCH + TITLE + ACCENT LINE
 -- ============================================================
 local ROW_Y = HEADER_H + 8
 
@@ -331,7 +323,7 @@ sidebar.Size = UDim2.new(0, 120, 1, -(SIDEBAR_Y + 10))
 sidebar.Position = UDim2.new(0, 10, 0, SIDEBAR_Y)
 sidebar.BackgroundTransparency = 1
 sidebar.BorderSizePixel = 0
-sidebar.ScrollBarThickness = 0                -- ✅ HILANG TOTAL
+sidebar.ScrollBarThickness = 0
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -362,7 +354,6 @@ contentPanel.BorderSizePixel = 0
 contentPanel.ClipsDescendants = true
 contentPanel.Parent = mainFrame
 
--- ✅ FIX: Frame → ScrollingFrame (agar scroll berfungsi)
 local contentScroll = Instance.new("ScrollingFrame")
 contentScroll.Name = "ContentScroll"
 contentScroll.Size = UDim2.new(1, 0, 1, 0)
