@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE
+  [5] GUI (Flow Hub v2.4) — 100% LYNX STRUCTURE
 ============================================================
 ]]
 
@@ -129,7 +129,7 @@ end)
 _G.FlowHubSavedIconPos = savedIconPos
 
 -- ============================================================
--- MAIN FRAME (RESPONSIVE SIZE)
+-- MAIN FRAME
 -- ============================================================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
@@ -159,27 +159,38 @@ mStroke.Transparency = 0.3
 mStroke.Parent = mainFrame
 
 -- ============================================================
--- HEADER (LYNX STYLE - TRANSPARAN & TIPIS)
+-- HEADER (100% LYNX STYLE - NO BOX, 1 HORIZONTAL LINE)
 -- ============================================================
 local HEADER_H = 34
 
 local header = Instance.new("TextButton")
 header.Name = "Header"
 header.Size = UDim2.new(1, 0, 0, HEADER_H)
-header.BackgroundTransparency = 1 -- Transparan khas Lynx
+header.BackgroundTransparency = 1 
 header.Text = ""
 header.AutoButtonColor = false
 header.Active = true
 header.Parent = mainFrame
 
--- Garis tipis di bawah header
-local hLine = Instance.new("Frame")
-hLine.Size = UDim2.new(1, -20, 0, 1)
-hLine.Position = UDim2.new(0, 10, 1, -1)
-hLine.BackgroundColor3 = C.stroke
-hLine.BackgroundTransparency = 0.4
-hLine.BorderSizePixel = 0
-hLine.Parent = header
+-- Garis horizontal tipis khas Lynx (Hanya SATU)
+local headerLine = Instance.new("Frame")
+headerLine.Name = "HeaderLine"
+headerLine.Size = UDim2.new(1, -20, 0, 1)
+headerLine.Position = UDim2.new(0, 10, 1, -1)
+headerLine.BackgroundColor3 = C.stroke
+headerLine.BackgroundTransparency = 0.6
+headerLine.BorderSizePixel = 0
+headerLine.Parent = header
+
+-- Drag Handle khas Lynx
+local dragHandle = Instance.new("Frame")
+dragHandle.Size = UDim2.new(0, 28, 0, 2)
+dragHandle.Position = UDim2.new(0.5, -14, 0, 4)
+dragHandle.BackgroundColor3 = C.accent
+dragHandle.BackgroundTransparency = 0.35
+dragHandle.BorderSizePixel = 0
+dragHandle.Parent = header
+Instance.new("UICorner", dragHandle).CornerRadius = UDim.new(0, 2)
 
 -- Teks "Flow"
 local lText = Instance.new("TextLabel")
@@ -193,7 +204,7 @@ lText.TextXAlignment = Enum.TextXAlignment.Left
 lText.BackgroundTransparency = 1
 lText.Parent = header
 
--- Ikon di samping teks
+-- Ikon
 local lIcon = Instance.new("ImageLabel")
 lIcon.Size = UDim2.new(0, 16, 0, 16)
 lIcon.Position = UDim2.new(0, 48, 0.5, -8)
@@ -236,16 +247,6 @@ minBtn.BackgroundTransparency = 0.5
 minBtn.BorderSizePixel = 0
 minBtn.Parent = header
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
-
--- Garis pembatas Full Width (di bawah header)
-local line1 = Instance.new("Frame")
-line1.Name = "HeaderLine"
-line1.Size = UDim2.new(1, 0, 0, 1)
-line1.Position = UDim2.new(0, 0, 0, HEADER_H)
-line1.BackgroundColor3 = C.stroke
-line1.BackgroundTransparency = 0.3
-line1.BorderSizePixel = 0
-line1.Parent = mainFrame
 
 -- ============================================================
 -- SEARCH + TITLE + ACCENT LINE
@@ -313,7 +314,7 @@ line2.BorderSizePixel = 0
 line2.Parent = mainFrame
 
 -- ============================================================
--- SIDEBAR
+-- SIDEBAR (DENGAN GARIS VERTIKAL LYNX)
 -- ============================================================
 local SIDEBAR_Y = ROW_Y + 38
 
@@ -329,6 +330,16 @@ sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
 sidebar.ClipsDescendants = true
 sidebar.Parent = mainFrame
+
+-- ✅ Garis Vertikal Sidebar (Seperti Lynx)
+local sidebarLine = Instance.new("Frame")
+sidebarLine.Name = "SidebarLine"
+sidebarLine.Size = UDim2.new(0, 1, 1, 0)
+sidebarLine.Position = UDim2.new(1, 0, 0, 0)
+sidebarLine.BackgroundColor3 = C.stroke
+sidebarLine.BackgroundTransparency = 0.42
+sidebarLine.BorderSizePixel = 0
+sidebarLine.Parent = sidebar
 
 local sLayout = Instance.new("UIListLayout")
 sLayout.Padding = UDim.new(0, 4)
@@ -383,7 +394,7 @@ S.GUI = {
     ContentScroll = contentScroll,
     ContentTitle = cTitle,
     TitleLine = line2,
-    HeaderLine = line1,
+    HeaderLine = headerLine,
     TitleDivider = vDivider,
     SearchBox = searchBox,
     MinBtn = minBtn,
