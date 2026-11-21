@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE
+  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (FIXED)
 ============================================================
 ]]
 
@@ -166,20 +166,11 @@ local HEADER_H = 34
 local header = Instance.new("TextButton")
 header.Name = "Header"
 header.Size = UDim2.new(1, 0, 0, HEADER_H)
-header.BackgroundTransparency = 1 -- Transparan khas Lynx
+header.BackgroundTransparency = 1
 header.Text = ""
 header.AutoButtonColor = false
 header.Active = true
 header.Parent = mainFrame
-
--- Garis tipis di bawah header
-local hLine = Instance.new("Frame")
-hLine.Size = UDim2.new(1, -20, 0, 1)
-hLine.Position = UDim2.new(0, 10, 1, -1)
-hLine.BackgroundColor3 = C.stroke
-hLine.BackgroundTransparency = 0.4
-hLine.BorderSizePixel = 0
-hLine.Parent = header
 
 -- Teks "Flow"
 local lText = Instance.new("TextLabel")
@@ -237,7 +228,7 @@ minBtn.BorderSizePixel = 0
 minBtn.Parent = header
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
 
--- Garis pembatas Full Width (di bawah header)
+-- Garis pembatas Full Width (di bawah header) — HANYA SATU GARIS
 local line1 = Instance.new("Frame")
 line1.Name = "HeaderLine"
 line1.Size = UDim2.new(1, 0, 0, 1)
