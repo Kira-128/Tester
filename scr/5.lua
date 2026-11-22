@@ -136,7 +136,7 @@ mainFrame.Name = "MainFrame"
 
 if isMobile then
     -- PERUBAHAN UKURAN DI SINI: 470x270
-    mainFrame.Size = UDim2.new(0, 470, 0, 270)
+    mainFrame.Size = UDim2.new(0, 470, 0, 280)
 else
     mainFrame.Size = UDim2.new(0, 560, 0, 360)
 end
