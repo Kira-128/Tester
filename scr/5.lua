@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub) — 100% LYNX UI ARCHITECTURE
+  [5] GUI (Flow Hub) — 100% LYNX LAYOUT (TANPA SELF)
 ============================================================
 ]]
 
@@ -9,8 +9,11 @@ local C = S.Theme.Colors
 local I = S.Theme.Icons
 local F = S.Theme.Font
 local UIS = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
 
+-- Deteksi Platform
+local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
+
+-- Anti-Crash gethui
 local parentGui
 local ok, hui = pcall(function() return gethui and gethui() end)
 if ok and hui then parentGui = hui else parentGui = game:GetService("CoreGui") end
@@ -27,69 +30,62 @@ gui.Parent = parentGui
 -- ============================================================
 -- KONFIGURASI UKURAN (PERSIS LYNX)
 -- ============================================================
-local isMobile = UIS.TouchEnabled and not UIS.MouseEnabled
-local windowSize, minWindowSize, maxWindowSize
-
+local windowSize
 if isMobile then
-    windowSize    = UDim2.new(0, 420, 0, 280) -- Ukuran persis Lynx Mobile
-    minWindowSize = Vector2.new(380, 250)
-    maxWindowSize = Vector2.new(800, 600)
+    windowSize = UDim2.new(0, 420, 0, 280) 
 else
-    windowSize    = UDim2.new(0, 560, 0, 360)
-    minWindowSize = Vector2.new(440, 300)
-    maxWindowSize = Vector2.new(1100, 760)
+    windowSize = UDim2.new(0, 560, 0, 360)
 end
 
 local sidebarWidth = 120
 local headerHeight = 34
 local topBarHeight = 28
-local sectionHeaderHeight = 30
 
 -- ============================================================
 -- MAIN FRAME
 -- ============================================================
-local self_win = Instance.new("Frame")
-self_win.Name = "MainFrame"
-self_win.Size = windowSize
-self_win.Position = UDim2.new(0.5, -windowSize.X.Offset/2, 0.5, -windowSize.Y.Offset/2)
-self_win.BackgroundColor3 = C.bg1
-self_win.BackgroundTransparency = 0.1
-self_win.BorderSizePixel = 0
-self_win.ClipsDescendants = false
-self_win.ZIndex = 3
-self_win.Visible = false
-self_win.Parent = gui
-Instance.new("UICorner", self_win).CornerRadius = UDim.new(0, 7)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = windowSize
+mainFrame.Position = UDim2.new(0.5, -windowSize.X.Offset/2, 0.5, -windowSize.Y.Offset/2)
+mainFrame.BackgroundColor3 = C.panel 
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.BorderSizePixel = 0
+mainFrame.ClipsDescendants = false
+mainFrame.ZIndex = 3
+mainFrame.Visible = false
+mainFrame.Parent = gui
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 7)
 
 local mStroke = Instance.new("UIStroke")
 mStroke.Color = C.stroke
 mStroke.Thickness = 1
 mStroke.Transparency = 0.3
-mStroke.Parent = self_win
+mStroke.Parent = mainFrame
 
 -- ============================================================
 -- HEADER
 -- ============================================================
-local scriptHeader = Instance.new("TextButton")
-scriptHeader.Name = "Header"
-scriptHeader.Size = UDim2.new(1, 0, 0, headerHeight)
-scriptHeader.Position = UDim2.new(0, 0, 0, 0)
-scriptHeader.BackgroundTransparency = 1
-scriptHeader.BorderSizePixel = 0
-scriptHeader.Text = ""
-scriptHeader.AutoButtonColor = false
-scriptHeader.ZIndex = 5
-scriptHeader.Parent = self_win
+local header = Instance.new("TextButton")
+header.Name = "Header"
+header.Size = UDim2.new(1, 0, 0, headerHeight)
+header.Position = UDim2.new(0, 0, 0, 0)
+header.BackgroundTransparency = 1
+header.BorderSizePixel = 0
+header.Text = ""
+header.AutoButtonColor = false
+header.ZIndex = 5
+header.Parent = mainFrame
 
--- Garis tipis di bawah header
+-- Garis tipis di bawah header (Transparansi 0.62 persis Lynx)
 local headerLine = Instance.new("Frame")
 headerLine.Size = UDim2.new(1, -20, 0, 1)
 headerLine.Position = UDim2.new(0, 10, 1, -1)
 headerLine.BackgroundColor3 = C.stroke
-headerLine.BackgroundTransparency = 0.62 -- Transparansi persis Lynx
+headerLine.BackgroundTransparency = 0.62 
 headerLine.BorderSizePixel = 0
 headerLine.ZIndex = 5
-headerLine.Parent = scriptHeader
+headerLine.Parent = header
 
 -- Teks Title
 local lText = Instance.new("TextLabel")
@@ -102,7 +98,7 @@ lText.Font = F.bold
 lText.TextXAlignment = Enum.TextXAlignment.Left
 lText.BackgroundTransparency = 1
 lText.ZIndex = 6
-lText.Parent = scriptHeader
+lText.Parent = header
 
 -- Ikon
 local lIcon = Instance.new("ImageLabel")
@@ -112,7 +108,7 @@ lIcon.BackgroundTransparency = 1
 lIcon.Image = I.icon
 lIcon.ImageColor3 = C.accent
 lIcon.ZIndex = 6
-lIcon.Parent = scriptHeader
+lIcon.Parent = header
 
 -- Garis pemisah vertikal
 local separator = Instance.new("Frame")
@@ -122,7 +118,7 @@ separator.BackgroundColor3 = C.stroke
 separator.BackgroundTransparency = 0.2
 separator.BorderSizePixel = 0
 separator.ZIndex = 6
-separator.Parent = scriptHeader
+separator.Parent = header
 
 -- Subtitle
 local sub = Instance.new("TextLabel")
@@ -135,9 +131,9 @@ sub.Font = F.bold
 sub.TextXAlignment = Enum.TextXAlignment.Left
 sub.BackgroundTransparency = 1
 sub.ZIndex = 6
-sub.Parent = scriptHeader
+sub.Parent = header
 
--- Tombol Minimize (Persis Lynx)
+-- Tombol Minimize
 local btnMinHeader = Instance.new("TextButton")
 btnMinHeader.Size = UDim2.new(0, 22, 0, 22)
 btnMinHeader.Position = UDim2.new(1, -28, 0.5, -11)
@@ -147,7 +143,7 @@ btnMinHeader.BorderSizePixel = 0
 btnMinHeader.Text = ""
 btnMinHeader.AutoButtonColor = false
 btnMinHeader.ZIndex = 7
-btnMinHeader.Parent = scriptHeader
+btnMinHeader.Parent = header
 Instance.new("UICorner", btnMinHeader).CornerRadius = UDim.new(0, 5)
 
 local btnMinStroke = Instance.new("UIStroke")
@@ -176,7 +172,7 @@ sidebar.BackgroundTransparency = 1
 sidebar.BorderSizePixel = 0
 sidebar.ClipsDescendants = true
 sidebar.ZIndex = 4
-sidebar.Parent = self_win
+sidebar.Parent = mainFrame
 
 local sidebarLine = Instance.new("Frame")
 sidebarLine.Size = UDim2.new(0, 1, 1, 0)
@@ -188,7 +184,7 @@ sidebarLine.ZIndex = 4
 sidebarLine.Parent = sidebar
 
 -- ============================================================
--- SEARCH BAR (Posisi Persis Lynx)
+-- SEARCH BAR
 -- ============================================================
 local searchW = sidebarWidth - 12
 local searchH = 22
@@ -265,7 +261,7 @@ contentBg.BackgroundTransparency = 1
 contentBg.BorderSizePixel = 0
 contentBg.ClipsDescendants = true
 contentBg.ZIndex = 4
-contentBg.Parent = self_win
+contentBg.Parent = mainFrame
 
 -- Top Bar Content (Judul Halaman)
 local topBar = Instance.new("Frame")
@@ -308,8 +304,22 @@ topBarLine.BorderSizePixel = 0
 topBarLine.ZIndex = 5
 topBarLine.Parent = topBar
 
+-- Content Scroll (Tempat Menu Kanan)
+local contentScroll = Instance.new("ScrollingFrame")
+contentScroll.Name = "ContentScroll"
+contentScroll.Size = UDim2.new(1, -4, 1, -(topBarHeight + 4))
+contentScroll.Position = UDim2.new(0, 2, 0, topBarHeight + 2)
+contentScroll.BackgroundTransparency = 1
+contentScroll.BorderSizePixel = 0
+contentScroll.ScrollBarThickness = 0
+contentScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+contentScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+contentScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+contentScroll.ZIndex = 5
+contentScroll.Parent = contentBg
+
 -- ============================================================
--- FLOAT BUTTON (Tombol Melayang)
+-- FLOAT BUTTON
 -- ============================================================
 local floatBtn = Instance.new("TextButton")
 floatBtn.Size = UDim2.new(0, 40, 0, 40)
@@ -332,17 +342,19 @@ floatIcon.ZIndex = 51
 floatIcon.Parent = floatBtn
 
 -- ============================================================
--- EXPORT (Agar 6.lua bisa mendeteksi)
+-- EXPORT (Agar 6.lua dan 7.lua bisa mendeteksi)
 -- ============================================================
 S.GUI = {
     Screen = gui,
-    MainFrame = self_win,
-    Header = scriptHeader,
+    MainFrame = mainFrame,
+    Header = header,
     Sidebar = sidebar,
     Content = contentBg,
-    SearchBox = searchBox,
+    ContentScroll = contentScroll,
     ContentTitle = pageTitle,
+    TitleLine = topBarLine,
     NavContainer = navContainer,
+    SearchBox = searchBox,
     FloatBtn = floatBtn,
     MinBtn = btnMinHeader
 }
