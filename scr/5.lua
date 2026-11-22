@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (FIXED 470x270)
+  [5] GUI (Flow Hub v2.4
 ============================================================
 ]]
 
@@ -135,7 +135,7 @@ local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 
 if isMobile then
-    mainFrame.Size = UDim2.new(0, 470, 0, 270)
+    mainFrame.Size = UDim2.new(0, 470, 0, 280)
 else
     mainFrame.Size = UDim2.new(0, 560, 0, 360)
 end
