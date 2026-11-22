@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — UKURAN 420x280 (LYNX STYLE)
+  [5] GUI (Flow Hub v2.4) — 100% LYNX LAYOUT (420x280)
 ============================================================
 ]]
 
@@ -28,7 +28,7 @@ gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = parentGui
 
 -- ============================================================
--- FLOAT BUTTON (KOTAK 48x48 + LOGO FULL)
+-- FLOAT BUTTON (Tetap Sama)
 -- ============================================================
 local floatBtn = Instance.new("TextButton")
 floatBtn.Name = "FloatBtn"
@@ -67,9 +67,6 @@ fIcon.Active = false
 fIcon.ZIndex = 101
 fIcon.Parent = fBg
 
--- ============================================================
--- FLOAT BUTTON DRAG LOGIC
--- ============================================================
 local iconConns = {}
 local savedIconPos = floatBtn.Position
 local iconDragging = false
@@ -129,23 +126,18 @@ end)
 _G.FlowHubSavedIconPos = savedIconPos
 
 -- ============================================================
--- MAIN FRAME (RESPONSIVE SIZE 420x280)
+-- MAIN FRAME (UKURAN 420x280)
 -- ============================================================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-
--- PERUBAHAN UTAMA: Ukuran diubah ke 420x280
 mainFrame.Size = UDim2.new(0, 420, 0, 280) 
-
-local startSize = mainFrame.Size
-mainFrame.Position = UDim2.new(0.5, -(startSize.X.Offset / 2), 0.5, -(startSize.Y.Offset / 2))
-
+mainFrame.Position = UDim2.new(0.5, -(420 / 2), 0.5, -(280 / 2))
 mainFrame.BackgroundColor3 = C.panel
 mainFrame.BackgroundTransparency = 0.1
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Visible = false
-mainFrame.ClipsDescendants = true -- PENTING agar dropdown tidak keluar
+mainFrame.ClipsDescendants = false 
 mainFrame.Parent = gui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
 
@@ -156,7 +148,7 @@ mStroke.Transparency = 0.3
 mStroke.Parent = mainFrame
 
 -- ============================================================
--- HEADER (LYNX STYLE - TRANSPARAN & TIPIS)
+-- HEADER (LYNX STYLE)
 -- ============================================================
 local HEADER_H = 34
 
@@ -169,7 +161,6 @@ header.AutoButtonColor = false
 header.Active = true
 header.Parent = mainFrame
 
--- Garis tipis di bawah header
 local hLine = Instance.new("Frame")
 hLine.Size = UDim2.new(1, -20, 0, 1)
 hLine.Position = UDim2.new(0, 10, 1, -1)
@@ -178,7 +169,6 @@ hLine.BackgroundTransparency = 0.4
 hLine.BorderSizePixel = 0
 hLine.Parent = header
 
--- Teks "Flow"
 local lText = Instance.new("TextLabel")
 lText.Size = UDim2.new(0, 60, 1, 0)
 lText.Position = UDim2.new(0, 12, 0, 0)
@@ -190,7 +180,6 @@ lText.TextXAlignment = Enum.TextXAlignment.Left
 lText.BackgroundTransparency = 1
 lText.Parent = header
 
--- Ikon di samping teks
 local lIcon = Instance.new("ImageLabel")
 lIcon.Size = UDim2.new(0, 16, 0, 16)
 lIcon.Position = UDim2.new(0, 48, 0.5, -8)
@@ -200,7 +189,6 @@ lIcon.ImageColor3 = C.accent
 lIcon.ScaleType = Enum.ScaleType.Fit
 lIcon.Parent = header
 
--- Garis pemisah vertikal
 local sep = Instance.new("Frame")
 sep.Size = UDim2.new(0, 1, 0, 16)
 sep.Position = UDim2.new(0, 74, 0.5, -8)
@@ -208,7 +196,6 @@ sep.BackgroundColor3 = C.stroke
 sep.BorderSizePixel = 0
 sep.Parent = header
 
--- Subtitle
 local sub = Instance.new("TextLabel")
 sub.Size = UDim2.new(0, 200, 1, 0)
 sub.Position = UDim2.new(0, 84, 0, 0)
@@ -220,7 +207,6 @@ sub.TextXAlignment = Enum.TextXAlignment.Left
 sub.BackgroundTransparency = 1
 sub.Parent = header
 
--- Tombol Minimize
 local minBtn = Instance.new("TextButton")
 minBtn.Size = UDim2.new(0, 22, 0, 22)
 minBtn.Position = UDim2.new(1, -30, 0.5, -11)
@@ -234,24 +220,15 @@ minBtn.BorderSizePixel = 0
 minBtn.Parent = header
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
 
--- Garis pembatas Full Width (di bawah header)
-local line1 = Instance.new("Frame")
-line1.Name = "HeaderLine"
-line1.Size = UDim2.new(1, 0, 0, 1)
-line1.Position = UDim2.new(0, 0, 0, HEADER_H)
-line1.BackgroundColor3 = C.stroke
-line1.BackgroundTransparency = 0.3
-line1.BorderSizePixel = 0
-line1.Parent = mainFrame
-
 -- ============================================================
--- SEARCH + TITLE + ACCENT LINE
+-- TOP BAR (SEARCH & TITLE SEJAJAR - GAYA LYNX)
 -- ============================================================
-local ROW_Y = HEADER_H + 8
+local topBarY = HEADER_H + 6 
 
+-- 1. Search Bar (Kiri)
 local searchFrame = Instance.new("Frame")
-searchFrame.Size = UDim2.new(0.35, 0, 0, 26)
-searchFrame.Position = UDim2.new(0, 10, 0, ROW_Y)
+searchFrame.Size = UDim2.new(0, 120, 0, 24)
+searchFrame.Position = UDim2.new(0, 10, 0, topBarY)
 searchFrame.BackgroundColor3 = C.bg2
 searchFrame.BackgroundTransparency = 0.1
 searchFrame.BorderSizePixel = 0
@@ -260,15 +237,15 @@ Instance.new("UICorner", searchFrame).CornerRadius = UDim.new(0, 5)
 
 local sIcon = Instance.new("ImageLabel")
 sIcon.Size = UDim2.new(0, 10, 0, 10)
-sIcon.Position = UDim2.new(0, 9, 0.5, -5)
+sIcon.Position = UDim2.new(0, 8, 0.5, -5)
 sIcon.BackgroundTransparency = 1
 sIcon.Image = I.search
 sIcon.ImageColor3 = C.textDim
 sIcon.Parent = searchFrame
 
 local searchBox = Instance.new("TextBox")
-searchBox.Size = UDim2.new(1, -30, 1, 0)
-searchBox.Position = UDim2.new(0, 26, 0, 0)
+searchBox.Size = UDim2.new(1, -28, 1, 0)
+searchBox.Position = UDim2.new(0, 24, 0, 0)
 searchBox.Text = ""
 searchBox.PlaceholderText = "Search feature.."
 searchBox.PlaceholderColor3 = C.textDim2
@@ -280,43 +257,42 @@ searchBox.TextXAlignment = Enum.TextXAlignment.Left
 searchBox.ClearTextOnFocus = false
 searchBox.Parent = searchFrame
 
+-- 2. Garis Aksen & Judul Halaman (Kanan)
 local vDivider = Instance.new("Frame")
-vDivider.Name = "TitleDivider"
-vDivider.Size = UDim2.new(0, 2, 0, 18)
-vDivider.Position = UDim2.new(0.35, 10, 0, ROW_Y + 4)
+vDivider.Size = UDim2.new(0, 2, 0, 14)
+vDivider.Position = UDim2.new(0, 140, 0, topBarY + 5)
 vDivider.BackgroundColor3 = C.accent
 vDivider.BorderSizePixel = 0
 vDivider.Parent = mainFrame
 Instance.new("UICorner", vDivider).CornerRadius = UDim.new(1, 0)
 
 local cTitle = Instance.new("TextLabel")
-cTitle.Size = UDim2.new(1, -200, 0, 26)
-cTitle.Position = UDim2.new(0.35, 20, 0, ROW_Y)
+cTitle.Size = UDim2.new(1, -160, 0, 24)
+cTitle.Position = UDim2.new(0, 148, 0, topBarY)
 cTitle.Text = "Combat"
 cTitle.TextColor3 = C.text
-cTitle.TextSize = 12
+cTitle.TextSize = 11
 cTitle.Font = F.bold
 cTitle.TextXAlignment = Enum.TextXAlignment.Left
 cTitle.BackgroundTransparency = 1
 cTitle.Parent = mainFrame
 
-local line2 = Instance.new("Frame")
-line2.Name = "TitleLine"
-line2.Size = UDim2.new(1, -200, 0, 1)
-line2.Position = UDim2.new(0.35, 20, 0, ROW_Y + 28)
-line2.BackgroundColor3 = C.stroke
-line2.BackgroundTransparency = 0.3
-line2.BorderSizePixel = 0
-line2.Parent = mainFrame
+-- Garis pembatas di bawah Top Bar
+local topLine = Instance.new("Frame")
+topLine.Size = UDim2.new(1, -20, 0, 1)
+topLine.Position = UDim2.new(0, 10, 0, topBarY + 30)
+topLine.BackgroundColor3 = C.stroke
+topLine.BackgroundTransparency = 0.4
+topLine.BorderSizePixel = 0
+topLine.Parent = mainFrame
 
 -- ============================================================
--- SIDEBAR (DISESUAIKAN AGAR MUAT DI 280px)
+-- SIDEBAR & CONTENT (Rapat & Proporsional)
 -- ============================================================
-local SIDEBAR_Y = ROW_Y + 38
+local SIDEBAR_Y = topBarY + 36
 
 local sidebar = Instance.new("ScrollingFrame")
 sidebar.Name = "Sidebar"
--- Lebar 115 agar proporsional dengan layar 420
 sidebar.Size = UDim2.new(0, 115, 1, -(SIDEBAR_Y + 10))
 sidebar.Position = UDim2.new(0, 10, 0, SIDEBAR_Y)
 sidebar.BackgroundTransparency = 1
@@ -329,23 +305,13 @@ sidebar.ClipsDescendants = true
 sidebar.Parent = mainFrame
 
 local sLayout = Instance.new("UIListLayout")
-sLayout.Padding = UDim.new(0, 3) -- Jarak dirapatkan sedikit (dari 4 ke 3)
+sLayout.Padding = UDim.new(0, 2) -- Jarak lebih rapat
 sLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-sLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 sLayout.SortOrder = Enum.SortOrder.LayoutOrder
 sLayout.Parent = sidebar
 
-local sPad = Instance.new("UIPadding")
-sPad.PaddingTop = UDim.new(0, 0)
-sPad.PaddingBottom = UDim.new(0, 4)
-sPad.Parent = sidebar
-
--- ============================================================
--- CONTENT PANEL (DISESUAIKAN)
--- ============================================================
 local contentPanel = Instance.new("Frame")
 contentPanel.Name = "ContentPanel"
--- Lebar dikurangi agar tidak menabrak layar 420
 contentPanel.Size = UDim2.new(1, -135, 1, -(SIDEBAR_Y + 10)) 
 contentPanel.Position = UDim2.new(0, 125, 0, SIDEBAR_Y)
 contentPanel.BackgroundTransparency = 1
@@ -381,8 +347,8 @@ S.GUI = {
     Content = contentPanel,
     ContentScroll = contentScroll,
     ContentTitle = cTitle,
-    TitleLine = line2,
-    HeaderLine = line1,
+    TitleLine = topLine,
+    HeaderLine = hLine,
     TitleDivider = vDivider,
     SearchBox = searchBox,
     MinBtn = minBtn,
