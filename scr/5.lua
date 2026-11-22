@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (FIXED)
+  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (470x270)
 ============================================================
 ]]
 
@@ -129,13 +129,14 @@ end)
 _G.FlowHubSavedIconPos = savedIconPos
 
 -- ============================================================
--- MAIN FRAME (RESPONSIVE SIZE)
+-- MAIN FRAME (UKURAN 470x270)
 -- ============================================================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 
 if isMobile then
-    mainFrame.Size = UDim2.new(0, 450, 0, 300)
+    -- PERUBAHAN UKURAN DI SINI: 470x270
+    mainFrame.Size = UDim2.new(0, 470, 0, 270)
 else
     mainFrame.Size = UDim2.new(0, 560, 0, 360)
 end
@@ -338,6 +339,7 @@ sPad.Parent = sidebar
 -- ============================================================
 local contentPanel = Instance.new("Frame")
 contentPanel.Name = "ContentPanel"
+-- Mengikuti lebar sidebar (120) + gap (10) = 140
 contentPanel.Size = UDim2.new(1, -140, 1, -(SIDEBAR_Y + 10))
 contentPanel.Position = UDim2.new(0, 130, 0, SIDEBAR_Y)
 contentPanel.BackgroundTransparency = 1
