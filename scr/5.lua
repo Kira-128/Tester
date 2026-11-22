@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — 470x270 (FIXED LINES)
+  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (FIXED 470x270)
 ============================================================
 ]]
 
@@ -10,8 +10,10 @@ local I = S.Theme.Icons
 local F = S.Theme.Font
 local UIS = game:GetService("UserInputService")
 
+-- Deteksi Platform
 local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
 
+-- Anti-Crash gethui
 local parentGui
 local ok, hui = pcall(function() return gethui and gethui() end)
 if ok and hui then parentGui = hui else parentGui = game:GetService("CoreGui") end
@@ -25,7 +27,9 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = parentGui
 
--- FLOAT BUTTON
+-- ============================================================
+-- FLOAT BUTTON (KOTAK 48x48 + LOGO FULL)
+-- ============================================================
 local floatBtn = Instance.new("TextButton")
 floatBtn.Name = "FloatBtn"
 floatBtn.Size = UDim2.new(0, 48, 0, 48)
@@ -63,7 +67,9 @@ fIcon.Active = false
 fIcon.ZIndex = 101
 fIcon.Parent = fBg
 
--- FLOAT BUTTON DRAG
+-- ============================================================
+-- FLOAT BUTTON DRAG LOGIC
+-- ============================================================
 local iconConns = {}
 local savedIconPos = floatBtn.Position
 local iconDragging = false
@@ -94,7 +100,9 @@ iconConns[#iconConns + 1] = UIS.InputChanged:Connect(function(input)
     if not iconDragging or not floatBtn or not floatBtn.Parent or not iconStartPos or not iconDragStart then return end
     if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
         local delta = input.Position - iconDragStart
-        if delta.Magnitude > dragThreshold then iconDragMoved = true end
+        if delta.Magnitude > dragThreshold then
+            iconDragMoved = true
+        end
         floatBtn.Position = UDim2.new(
             iconStartPos.X.Scale, iconStartPos.X.Offset + delta.X,
             iconStartPos.Y.Scale, iconStartPos.Y.Offset + delta.Y
@@ -110,7 +118,9 @@ iconConns[#iconConns + 1] = UIS.InputEnded:Connect(function(input)
             savedIconPos = floatBtn.Position
             if not iconDragMoved then
                 floatBtn.Visible = false
-                if S.GUI and S.GUI.MainFrame then S.GUI.MainFrame.Visible = true end
+                if S.GUI and S.GUI.MainFrame then
+                    S.GUI.MainFrame.Visible = true
+                end
             end
         end
     end
@@ -118,16 +128,21 @@ end)
 
 _G.FlowHubSavedIconPos = savedIconPos
 
--- MAIN FRAME
+-- ============================================================
+-- MAIN FRAME (UKURAN 470x270)
+-- ============================================================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
+
 if isMobile then
-    mainFrame.Size = UDim2.new(0, 470, 0, 280)
+    mainFrame.Size = UDim2.new(0, 470, 0, 270)
 else
     mainFrame.Size = UDim2.new(0, 560, 0, 360)
 end
+
 local startSize = mainFrame.Size
 mainFrame.Position = UDim2.new(0.5, -(startSize.X.Offset / 2), 0.5, -(startSize.Y.Offset / 2))
+
 mainFrame.BackgroundColor3 = C.panel
 mainFrame.BackgroundTransparency = 0.1
 mainFrame.BorderSizePixel = 0
@@ -143,8 +158,11 @@ mStroke.Thickness = 1
 mStroke.Transparency = 0.3
 mStroke.Parent = mainFrame
 
--- HEADER
+-- ============================================================
+-- HEADER (LYNX STYLE - TRANSPARAN & TIPIS)
+-- ============================================================
 local HEADER_H = 34
+
 local header = Instance.new("TextButton")
 header.Name = "Header"
 header.Size = UDim2.new(1, 0, 0, HEADER_H)
@@ -154,16 +172,7 @@ header.AutoButtonColor = false
 header.Active = true
 header.Parent = mainFrame
 
--- Garis Header (Persis Lynx)
-local line1 = Instance.new("Frame")
-line1.Name = "HeaderLine"
-line1.Size = UDim2.new(1, -20, 0, 1)
-line1.Position = UDim2.new(0, 10, 1, -1)
-line1.BackgroundColor3 = C.stroke
-line1.BackgroundTransparency = 0.62
-line1.BorderSizePixel = 0
-line1.Parent = header
-
+-- Teks "Flow"
 local lText = Instance.new("TextLabel")
 lText.Size = UDim2.new(0, 60, 1, 0)
 lText.Position = UDim2.new(0, 12, 0, 0)
@@ -175,6 +184,7 @@ lText.TextXAlignment = Enum.TextXAlignment.Left
 lText.BackgroundTransparency = 1
 lText.Parent = header
 
+-- Ikon di samping teks
 local lIcon = Instance.new("ImageLabel")
 lIcon.Size = UDim2.new(0, 16, 0, 16)
 lIcon.Position = UDim2.new(0, 48, 0.5, -8)
@@ -184,6 +194,7 @@ lIcon.ImageColor3 = C.accent
 lIcon.ScaleType = Enum.ScaleType.Fit
 lIcon.Parent = header
 
+-- Garis pemisah vertikal
 local sep = Instance.new("Frame")
 sep.Size = UDim2.new(0, 1, 0, 16)
 sep.Position = UDim2.new(0, 74, 0.5, -8)
@@ -191,6 +202,7 @@ sep.BackgroundColor3 = C.stroke
 sep.BorderSizePixel = 0
 sep.Parent = header
 
+-- Subtitle
 local sub = Instance.new("TextLabel")
 sub.Size = UDim2.new(0, 200, 1, 0)
 sub.Position = UDim2.new(0, 84, 0, 0)
@@ -202,6 +214,7 @@ sub.TextXAlignment = Enum.TextXAlignment.Left
 sub.BackgroundTransparency = 1
 sub.Parent = header
 
+-- Tombol Minimize
 local minBtn = Instance.new("TextButton")
 minBtn.Size = UDim2.new(0, 22, 0, 22)
 minBtn.Position = UDim2.new(1, -30, 0.5, -11)
@@ -215,8 +228,24 @@ minBtn.BorderSizePixel = 0
 minBtn.Parent = header
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
 
--- SEARCH + TITLE
+-- ============================================================
+-- GARIS HEADER (DIPERBAIKI: PUDAR & ADA JARAK)
+-- ============================================================
+local line1 = Instance.new("Frame")
+line1.Name = "HeaderLine"
+line1.Size = UDim2.new(1, -20, 0, 1)          -- Jarak 10px kiri & kanan
+line1.Position = UDim2.new(0, 10, 0, HEADER_H - 1) -- Pas di bawah header
+line1.BackgroundColor3 = C.stroke
+line1.BackgroundTransparency = 0.62          -- Transparansi persis Lynx
+line1.BorderSizePixel = 0
+line1.ZIndex = 4                             -- Di bawah teks header
+line1.Parent = mainFrame
+
+-- ============================================================
+-- SEARCH + TITLE + ACCENT LINE
+-- ============================================================
 local ROW_Y = HEADER_H + 8
+
 local searchFrame = Instance.new("Frame")
 searchFrame.Size = UDim2.new(0.35, 0, 0, 26)
 searchFrame.Position = UDim2.new(0, 10, 0, ROW_Y)
@@ -268,18 +297,20 @@ cTitle.TextXAlignment = Enum.TextXAlignment.Left
 cTitle.BackgroundTransparency = 1
 cTitle.Parent = mainFrame
 
--- Garis Bawah Judul (Persis Lynx)
 local line2 = Instance.new("Frame")
 line2.Name = "TitleLine"
-line2.Size = UDim2.new(1, -10, 0, 1)
-line2.Position = UDim2.new(0, 5, 1, -1)
+line2.Size = UDim2.new(1, -200, 0, 1)
+line2.Position = UDim2.new(0.35, 20, 0, ROW_Y + 28)
 line2.BackgroundColor3 = C.stroke
-line2.BackgroundTransparency = 0.7
+line2.BackgroundTransparency = 0.62 -- Disamakan pudar dengan header line
 line2.BorderSizePixel = 0
 line2.Parent = mainFrame
 
+-- ============================================================
 -- SIDEBAR
+-- ============================================================
 local SIDEBAR_Y = ROW_Y + 38
+
 local sidebar = Instance.new("ScrollingFrame")
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 120, 1, -(SIDEBAR_Y + 10))
@@ -305,7 +336,9 @@ sPad.PaddingTop = UDim.new(0, 0)
 sPad.PaddingBottom = UDim.new(0, 4)
 sPad.Parent = sidebar
 
+-- ============================================================
 -- CONTENT PANEL
+-- ============================================================
 local contentPanel = Instance.new("Frame")
 contentPanel.Name = "ContentPanel"
 contentPanel.Size = UDim2.new(1, -140, 1, -(SIDEBAR_Y + 10))
@@ -331,7 +364,9 @@ contentScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 contentScroll.ElasticBehavior = Enum.ElasticBehavior.Never
 contentScroll.Parent = contentPanel
 
+-- ============================================================
 -- EXPORT
+-- ============================================================
 S.GUI = {
     Screen = gui,
     FloatBtn = floatBtn,
