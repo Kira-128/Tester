@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (FIXED)
+  [5] GUI (Flow Hub v2.4) — UKURAN 420x280 (LYNX STYLE)
 ============================================================
 ]]
 
@@ -129,16 +129,13 @@ end)
 _G.FlowHubSavedIconPos = savedIconPos
 
 -- ============================================================
--- MAIN FRAME (RESPONSIVE SIZE)
+-- MAIN FRAME (RESPONSIVE SIZE 420x280)
 -- ============================================================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 
-if isMobile then
-    mainFrame.Size = UDim2.new(0, 450, 0, 300)
-else
-    mainFrame.Size = UDim2.new(0, 560, 0, 360)
-end
+-- PERUBAHAN UTAMA: Ukuran diubah ke 420x280
+mainFrame.Size = UDim2.new(0, 420, 0, 280) 
 
 local startSize = mainFrame.Size
 mainFrame.Position = UDim2.new(0.5, -(startSize.X.Offset / 2), 0.5, -(startSize.Y.Offset / 2))
@@ -148,7 +145,7 @@ mainFrame.BackgroundTransparency = 0.1
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Visible = false
-mainFrame.ClipsDescendants = true
+mainFrame.ClipsDescendants = true -- PENTING agar dropdown tidak keluar
 mainFrame.Parent = gui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
 
@@ -171,6 +168,15 @@ header.Text = ""
 header.AutoButtonColor = false
 header.Active = true
 header.Parent = mainFrame
+
+-- Garis tipis di bawah header
+local hLine = Instance.new("Frame")
+hLine.Size = UDim2.new(1, -20, 0, 1)
+hLine.Position = UDim2.new(0, 10, 1, -1)
+hLine.BackgroundColor3 = C.stroke
+hLine.BackgroundTransparency = 0.4
+hLine.BorderSizePixel = 0
+hLine.Parent = header
 
 -- Teks "Flow"
 local lText = Instance.new("TextLabel")
@@ -228,7 +234,7 @@ minBtn.BorderSizePixel = 0
 minBtn.Parent = header
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
 
--- Garis pembatas Full Width (di bawah header) — HANYA SATU GARIS
+-- Garis pembatas Full Width (di bawah header)
 local line1 = Instance.new("Frame")
 line1.Name = "HeaderLine"
 line1.Size = UDim2.new(1, 0, 0, 1)
@@ -304,13 +310,14 @@ line2.BorderSizePixel = 0
 line2.Parent = mainFrame
 
 -- ============================================================
--- SIDEBAR
+-- SIDEBAR (DISESUAIKAN AGAR MUAT DI 280px)
 -- ============================================================
 local SIDEBAR_Y = ROW_Y + 38
 
 local sidebar = Instance.new("ScrollingFrame")
 sidebar.Name = "Sidebar"
-sidebar.Size = UDim2.new(0, 120, 1, -(SIDEBAR_Y + 10))
+-- Lebar 115 agar proporsional dengan layar 420
+sidebar.Size = UDim2.new(0, 115, 1, -(SIDEBAR_Y + 10))
 sidebar.Position = UDim2.new(0, 10, 0, SIDEBAR_Y)
 sidebar.BackgroundTransparency = 1
 sidebar.BorderSizePixel = 0
@@ -322,7 +329,7 @@ sidebar.ClipsDescendants = true
 sidebar.Parent = mainFrame
 
 local sLayout = Instance.new("UIListLayout")
-sLayout.Padding = UDim.new(0, 4)
+sLayout.Padding = UDim.new(0, 3) -- Jarak dirapatkan sedikit (dari 4 ke 3)
 sLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 sLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 sLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -334,12 +341,13 @@ sPad.PaddingBottom = UDim.new(0, 4)
 sPad.Parent = sidebar
 
 -- ============================================================
--- CONTENT PANEL
+-- CONTENT PANEL (DISESUAIKAN)
 -- ============================================================
 local contentPanel = Instance.new("Frame")
 contentPanel.Name = "ContentPanel"
-contentPanel.Size = UDim2.new(1, -140, 1, -(SIDEBAR_Y + 10))
-contentPanel.Position = UDim2.new(0, 130, 0, SIDEBAR_Y)
+-- Lebar dikurangi agar tidak menabrak layar 420
+contentPanel.Size = UDim2.new(1, -135, 1, -(SIDEBAR_Y + 10)) 
+contentPanel.Position = UDim2.new(0, 125, 0, SIDEBAR_Y)
 contentPanel.BackgroundTransparency = 1
 contentPanel.BorderSizePixel = 0
 contentPanel.ClipsDescendants = true
