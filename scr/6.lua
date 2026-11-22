@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [6] LIBRARY (Flow Hub v2.4) — LYNX STYLE (SEARCH SELALU ADA)
+  [6] LIBRARY (Flow Hub v2.4) — LYNX STYLE (FIXED DROPDOWN)
 ============================================================
 ]]
 
@@ -403,10 +403,9 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN (VD.LUA STYLE - 160PX, SEARCH SELALU ADA)
+-- DROPDOWN (VD.LUA STYLE - FIXED OUT OF BOUNDS & ANIMATION)
 -- ============================================================
 local PANEL_W = 160
-local PANEL_PAD = 8
 local TWEEN_IN  = TweenInfo.new(0.24, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 local TWEEN_OUT = TweenInfo.new(0.18, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
 
@@ -415,8 +414,9 @@ local SlidePanel = {
     active = nil, count = 0, activeTween = nil, initialized = false,
 }
 
+-- Posisi tertutup dibuat lebih jauh (+24) agar benar-benar hilang
 local function slideClosedPos() 
-    return UDim2.new(1, PANEL_W + 4, 0.5, 0)
+    return UDim2.new(1, PANEL_W + 24, 0.5, 0)
 end
 
 local function slideOpenPos() 
@@ -429,22 +429,25 @@ local function initSlidePanel()
 
     local mainFrame = S.GUI.MainFrame
 
+    -- 1. OVERLAY (Diberi efek gelap & ClipsDescendants)
     local overlay = Instance.new("TextButton")
     overlay.Name = "SlideOverlay"
     overlay.Size = UDim2.new(1, 0, 1, 0)
     overlay.BackgroundColor3 = Color3.new(0, 0, 0)
-    overlay.BackgroundTransparency = 1
+    overlay.BackgroundTransparency = 0.85 -- Efek dim seperti Lynx
     overlay.BorderSizePixel = 0
     overlay.Text = ""
     overlay.AutoButtonColor = false
     overlay.Visible = false
     overlay.ZIndex = 140
+    overlay.ClipsDescendants = true -- PENTING: Mencegah panel keluar batas
     overlay.Parent = mainFrame
     overlay.Activated:Connect(function()
         Lib.HideSlidePanel()
     end)
     SlidePanel.overlay = overlay
 
+    -- 2. PANEL (Dijadikan Anak Overlay)
     local panel = Instance.new("Frame")
     panel.Name = "SlidePanel"
     panel.AnchorPoint = Vector2.new(1, 0.5)
@@ -455,7 +458,7 @@ local function initSlidePanel()
     panel.BorderSizePixel = 0
     panel.ClipsDescendants = true
     panel.ZIndex = 152
-    panel.Parent = mainFrame
+    panel.Parent = overlay -- <--- Diubah ke overlay
     Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 6)
     
     local pStroke = Instance.new("UIStroke")
@@ -465,6 +468,7 @@ local function initSlidePanel()
     pStroke.Parent = panel
     SlidePanel.panel = panel
 
+    -- 3. FOLDER
     local folder = Instance.new("Frame")
     folder.Name = "SlideFolder"
     folder.Size = UDim2.new(1, -2, 1, 0)
@@ -475,6 +479,7 @@ local function initSlidePanel()
     folder.Parent = panel
     SlidePanel.folder = folder
 
+    -- 4. PAGE LAYOUT
     local pageLayout = Instance.new("UIPageLayout")
     pageLayout.EasingDirection = Enum.EasingDirection.InOut
     pageLayout.EasingStyle = Enum.EasingStyle.Quad
@@ -519,7 +524,6 @@ function Lib.HideSlidePanel()
         TS:Create(SlidePanel.active._arrow, TweenInfo.new(0.15), {Rotation = 0}):Play()
     end
     SlidePanel.active = nil
-    SlidePanel.overlay.Visible = false
 
     if SlidePanel.activeTween then
         pcall(function() SlidePanel.activeTween:Cancel() end)
@@ -531,6 +535,13 @@ function Lib.HideSlidePanel()
     })
     SlidePanel.activeTween = tw
     tw:Play()
+
+    -- Sembunyikan overlay SETELAH animasi meluncur selesai
+    tw.Completed:Connect(function()
+        if not SlidePanel.active then
+            SlidePanel.overlay.Visible = false
+        end
+    end)
 end
 
 function Lib.makeDropdown(parent, name, initialOptions, callback)
@@ -622,7 +633,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     container.LayoutOrder = layoutOrder
     container.Parent = SlidePanel.folder
 
-    -- ✅ Sesuai vd.lua: Search bar SELALU muncul
+    -- Search Box
     local searchBox = Instance.new("TextBox")
     searchBox.Name = "SearchBox"
     searchBox.Size = UDim2.new(1, -8, 0, 24)
@@ -648,7 +659,6 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
 
     local scrollSelect = Instance.new("ScrollingFrame")
     scrollSelect.Name = "OptionsList"
-    -- ✅ Karena search selalu ada, ukuran list selalu dikurangi (1, -36)
     scrollSelect.Size = UDim2.new(1, -8, 1, -36)
     scrollSelect.Position = UDim2.new(0, 4, 0, 32)
     scrollSelect.BackgroundTransparency = 1
@@ -868,10 +878,6 @@ end
 function Lib.attachResizeHandle(mainFrame)
     if not mainFrame or not mainFrame.Parent then return end
 
-    local UIS = S.Services.UIS or game:GetService("UserInputService")
-    local TS = S.Services.TS or game:GetService("TweenService")
-    local RunService = S.Services.Run or game:GetService("RunService")
-
     local isMobile = UIS.TouchEnabled and not UIS.MouseEnabled
     local minW, minH, maxW, maxH
 
@@ -947,7 +953,7 @@ function Lib.attachResizeHandle(mainFrame)
         resizeHandle.Position = UDim2.new(0, localX, 0, localY)
     end
 
-    local updateConn = RunService.RenderStepped:Connect(updateHandlePosition)
+    local updateConn = Run.RenderStepped:Connect(updateHandlePosition)
     updateHandlePosition()
 
     local isShowing = true
@@ -1028,7 +1034,7 @@ function Lib.attachResizeHandle(mainFrame)
         end
     end)
 
-    local renderConn = RunService.RenderStepped:Connect(function()
+    local renderConn = Run.RenderStepped:Connect(function()
         if destroyed then return end
         if not mainFrame.Parent then
             resizeHandle.Visible = false
