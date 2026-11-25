@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4
+  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (FINAL)
 ============================================================
 ]]
 
@@ -25,6 +25,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "FlowHub"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.IgnoreGuiInset = true -- FIX: Agar tidak meleset ke bawah
 gui.Parent = parentGui
 
 -- ============================================================
@@ -129,7 +130,7 @@ end)
 _G.FlowHubSavedIconPos = savedIconPos
 
 -- ============================================================
--- MAIN FRAME (UKURAN 470x270)
+-- MAIN FRAME (470x280 & FIX POSISI)
 -- ============================================================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
@@ -140,8 +141,9 @@ else
     mainFrame.Size = UDim2.new(0, 560, 0, 360)
 end
 
-local startSize = mainFrame.Size
-mainFrame.Position = UDim2.new(0.5, -(startSize.X.Offset / 2), 0.5, -(startSize.Y.Offset / 2))
+-- FIX POSISI AGAR PAS DI TENGAH
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 
 mainFrame.BackgroundColor3 = C.panel
 mainFrame.BackgroundTransparency = 0.1
@@ -159,7 +161,7 @@ mStroke.Transparency = 0.3
 mStroke.Parent = mainFrame
 
 -- ============================================================
--- HEADER (LYNX STYLE - TRANSPARAN & TIPIS)
+-- HEADER (LYNX STYLE)
 -- ============================================================
 local HEADER_H = 34
 
@@ -170,6 +172,7 @@ header.BackgroundTransparency = 1
 header.Text = ""
 header.AutoButtonColor = false
 header.Active = true
+header.ZIndex = 5
 header.Parent = mainFrame
 
 -- Teks "Flow"
@@ -182,9 +185,10 @@ lText.TextSize = 14
 lText.Font = F.bold
 lText.TextXAlignment = Enum.TextXAlignment.Left
 lText.BackgroundTransparency = 1
+lText.ZIndex = 6
 lText.Parent = header
 
--- Ikon di samping teks
+-- Ikon
 local lIcon = Instance.new("ImageLabel")
 lIcon.Size = UDim2.new(0, 16, 0, 16)
 lIcon.Position = UDim2.new(0, 48, 0.5, -8)
@@ -192,14 +196,16 @@ lIcon.BackgroundTransparency = 1
 lIcon.Image = I.icon
 lIcon.ImageColor3 = C.accent
 lIcon.ScaleType = Enum.ScaleType.Fit
+lIcon.ZIndex = 6
 lIcon.Parent = header
 
--- Garis pemisah vertikal
+-- Garis Pemisah Vertikal
 local sep = Instance.new("Frame")
 sep.Size = UDim2.new(0, 1, 0, 16)
 sep.Position = UDim2.new(0, 74, 0.5, -8)
 sep.BackgroundColor3 = C.stroke
 sep.BorderSizePixel = 0
+sep.ZIndex = 6
 sep.Parent = header
 
 -- Subtitle
@@ -212,6 +218,7 @@ sub.TextSize = 10
 sub.Font = F.norm
 sub.TextXAlignment = Enum.TextXAlignment.Left
 sub.BackgroundTransparency = 1
+sub.ZIndex = 6
 sub.Parent = header
 
 -- Tombol Minimize
@@ -225,24 +232,25 @@ minBtn.Font = F.bold
 minBtn.BackgroundColor3 = C.bg3
 minBtn.BackgroundTransparency = 0.5
 minBtn.BorderSizePixel = 0
+minBtn.ZIndex = 7
 minBtn.Parent = header
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
 
 -- ============================================================
--- GARIS HEADER (DIPERBAIKI: PUDAR & ADA JARAK)
+-- GARIS HEADER (PUDAR & ADA JARAK)
 -- ============================================================
 local line1 = Instance.new("Frame")
 line1.Name = "HeaderLine"
-line1.Size = UDim2.new(1, -20, 0, 1)          -- Jarak 10px kiri & kanan
-line1.Position = UDim2.new(0, 10, 0, HEADER_H - 1) -- Pas di bawah header
+line1.Size = UDim2.new(1, -20, 0, 1)
+line1.Position = UDim2.new(0, 10, 0, HEADER_H - 1)
 line1.BackgroundColor3 = C.stroke
-line1.BackgroundTransparency = 0.62          -- Transparansi persis Lynx
+line1.BackgroundTransparency = 0.62 
 line1.BorderSizePixel = 0
-line1.ZIndex = 4                             -- Di bawah teks header
+line1.ZIndex = 4
 line1.Parent = mainFrame
 
 -- ============================================================
--- SEARCH + TITLE + ACCENT LINE
+-- SEARCH + TITLE
 -- ============================================================
 local ROW_Y = HEADER_H + 8
 
@@ -252,6 +260,7 @@ searchFrame.Position = UDim2.new(0, 10, 0, ROW_Y)
 searchFrame.BackgroundColor3 = C.bg2
 searchFrame.BackgroundTransparency = 0.1
 searchFrame.BorderSizePixel = 0
+searchFrame.ZIndex = 5
 searchFrame.Parent = mainFrame
 Instance.new("UICorner", searchFrame).CornerRadius = UDim.new(0, 5)
 
@@ -261,6 +270,7 @@ sIcon.Position = UDim2.new(0, 9, 0.5, -5)
 sIcon.BackgroundTransparency = 1
 sIcon.Image = I.search
 sIcon.ImageColor3 = C.textDim
+sIcon.ZIndex = 6
 sIcon.Parent = searchFrame
 
 local searchBox = Instance.new("TextBox")
@@ -275,6 +285,7 @@ searchBox.Font = F.norm
 searchBox.BackgroundTransparency = 1
 searchBox.TextXAlignment = Enum.TextXAlignment.Left
 searchBox.ClearTextOnFocus = false
+searchBox.ZIndex = 6
 searchBox.Parent = searchFrame
 
 local vDivider = Instance.new("Frame")
@@ -283,6 +294,7 @@ vDivider.Size = UDim2.new(0, 2, 0, 18)
 vDivider.Position = UDim2.new(0.35, 10, 0, ROW_Y + 4)
 vDivider.BackgroundColor3 = C.accent
 vDivider.BorderSizePixel = 0
+vDivider.ZIndex = 5
 vDivider.Parent = mainFrame
 Instance.new("UICorner", vDivider).CornerRadius = UDim.new(1, 0)
 
@@ -295,15 +307,18 @@ cTitle.TextSize = 12
 cTitle.Font = F.bold
 cTitle.TextXAlignment = Enum.TextXAlignment.Left
 cTitle.BackgroundTransparency = 1
+cTitle.ZIndex = 5
 cTitle.Parent = mainFrame
 
+-- Garis Bawah Judul (TitleLine)
 local line2 = Instance.new("Frame")
 line2.Name = "TitleLine"
 line2.Size = UDim2.new(1, -200, 0, 1)
 line2.Position = UDim2.new(0.35, 20, 0, ROW_Y + 28)
 line2.BackgroundColor3 = C.stroke
-line2.BackgroundTransparency = 0.62 -- Disamakan pudar dengan header line
+line2.BackgroundTransparency = 0.3
 line2.BorderSizePixel = 0
+line2.ZIndex = 5
 line2.Parent = mainFrame
 
 -- ============================================================
@@ -322,6 +337,7 @@ sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
 sidebar.ClipsDescendants = true
+sidebar.ZIndex = 5
 sidebar.Parent = mainFrame
 
 local sLayout = Instance.new("UIListLayout")
@@ -346,6 +362,7 @@ contentPanel.Position = UDim2.new(0, 130, 0, SIDEBAR_Y)
 contentPanel.BackgroundTransparency = 1
 contentPanel.BorderSizePixel = 0
 contentPanel.ClipsDescendants = true
+contentPanel.ZIndex = 5
 contentPanel.Parent = mainFrame
 
 local contentScroll = Instance.new("ScrollingFrame")
@@ -362,6 +379,7 @@ contentScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 contentScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 contentScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 contentScroll.ElasticBehavior = Enum.ElasticBehavior.Never
+contentScroll.ZIndex = 5
 contentScroll.Parent = contentPanel
 
 -- ============================================================
