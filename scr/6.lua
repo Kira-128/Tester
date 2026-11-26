@@ -191,8 +191,8 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 10
-    l.Font = F.bold
+    l.TextSize = 11
+    l.Font = F.norm
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -263,8 +263,8 @@ function Lib.makeInput(parent, name, default, callback)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 10
-    l.Font = F.bold
+    l.TextSize = 11
+    l.Font = F.norm
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -275,8 +275,8 @@ function Lib.makeInput(parent, name, default, callback)
     b.Size = UDim2.new(0.20, 0, 0, 20)
     b.Text = tostring(default)
     b.TextColor3 = C.text
-    b.TextSize = 10
-    b.Font = F.bold
+    b.TextSize = 11
+    b.Font = F.norm
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -311,8 +311,8 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     l.Position = UDim2.new(0, 12, 0, 0)
     l.Text = name
     l.TextColor3 = C.text
-    l.TextSize = 10
-    l.Font = F.bold
+    l.TextSize = 11
+    l.Font = F.norm
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -326,8 +326,8 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     b.PlaceholderText = placeholder or ""
     b.PlaceholderColor3 = C.textDim2
     b.TextColor3 = C.text
-    b.TextSize = 10
-    b.Font = F.bold
+    b.TextSize = 11
+    b.Font = F.norm
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -354,8 +354,8 @@ function Lib.makeButton(parent, name, callback, noHover)
     b.Position = UDim2.new(0, 6, 0.5, -(ITEM_H - 8) / 2)
     b.Text = name
     b.TextColor3 = C.text
-    b.TextSize = 10
-    b.Font = F.bold
+    b.TextSize = 11
+    b.Font = F.norm
     b.BackgroundColor3 = C.bg4
     b.BackgroundTransparency = 0.3
     b.BorderSizePixel = 0
@@ -566,8 +566,8 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     lbl.Position = UDim2.new(0, 12, 0, 0)
     lbl.Text = name
     lbl.TextColor3 = C.text
-    lbl.TextSize = 10
-    lbl.Font = F.bold
+    lbl.TextSize = 11
+    lbl.Font = F.norm
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.BackgroundTransparency = 1
     lbl.Parent = f
@@ -597,8 +597,8 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     optionLabel.Position = UDim2.new(0, 8, 0, 0)
     optionLabel.Text = "Select..."
     optionLabel.TextColor3 = C.textDim
-    optionLabel.TextSize = 10
-    optionLabel.Font = F.bold
+    optionLabel.TextSize = 11
+    optionLabel.Font = F.norm
     optionLabel.TextXAlignment = Enum.TextXAlignment.Left
     optionLabel.TextTruncate = Enum.TextTruncate.AtEnd
     optionLabel.BackgroundTransparency = 1
@@ -643,7 +643,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchBox.PlaceholderText = "Search..."
     searchBox.PlaceholderColor3 = C.textDim2
     searchBox.TextColor3 = C.text
-    searchBox.TextSize = 10
+    searchBox.TextSize = 11
     searchBox.Font = F.norm
     searchBox.BackgroundColor3 = C.bg3
     searchBox.BackgroundTransparency = 0.3
@@ -760,8 +760,8 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 optLbl.Position = UDim2.new(0, 10, 0, 0)
                 optLbl.Text = opt.label
                 optLbl.TextColor3 = isSelected and C.text or C.textDim
-                optLbl.TextSize = 10
-                optLbl.Font = isSelected and F.bold or F.norm
+                optLbl.TextSize = 11
+                optLbl.Font = F.norm
                 optLbl.TextXAlignment = Enum.TextXAlignment.Left
                 optLbl.TextTruncate = Enum.TextTruncate.AtEnd
                 optLbl.BackgroundTransparency = 1
