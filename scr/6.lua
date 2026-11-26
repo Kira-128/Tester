@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [6] LIBRARY (Flow Hub v2.4) — LYNX STYLE (FIXED DROPDOWN)
+  [6] LIBRARY (Flow Hub v2.4) — RAPAT & PADAT (LYNX STYLE)
 ============================================================
 ]]
 
@@ -66,7 +66,8 @@ local function recalcSection(card, content)
 
     local layout = content:FindFirstChildOfClass("UIListLayout")
     local totalH = layout and layout.AbsoluteContentSize.Y or 0
-    card.Size = UDim2.new(1, 0, 0, HEADER_H + totalH + 8)
+    -- Margin bawah diperkecil agar kotak tidak melar
+    card.Size = UDim2.new(1, 0, 0, HEADER_H + totalH + 2)
 
     task.defer(function()
         recalcGuard[card] = nil
@@ -147,14 +148,16 @@ function Lib.makeSection(parent, title, defaultOpen)
     content.ZIndex = 2
     content.Parent = card
 
+    -- RAPATKAN JARAK ANTAR BUTTON DISINI (PADDING 1)
     local contentLayout = Instance.new("UIListLayout")
-    contentLayout.Padding = UDim.new(0, 1)
+    contentLayout.Padding = UDim.new(0, 1) -- <--- UBAH JADI 1 (SEBELUMNYA MUNGKIN 3/4)
     contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
     contentLayout.Parent = content
 
+    -- RAPATKAN PADDING LUAR
     local cPad = Instance.new("UIPadding")
-    cPad.PaddingTop = UDim.new(0, 4)
-    cPad.PaddingBottom = UDim.new(0, 4)
+    cPad.PaddingTop = UDim.new(0, 2)    -- <--- UBAH DARI 4 JADI 2
+    cPad.PaddingBottom = UDim.new(0, 2) -- <--- UBAH DARI 6 JADI 2
     cPad.Parent = content
 
     local isOpen = defaultOpen
@@ -403,7 +406,7 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN (FIXED: TIDAK MELEWATI GARIS HEADER)
+-- DROPDOWN (FIXED & RAPAT)
 -- ============================================================
 local PANEL_W = 160
 local TWEEN_IN  = TweenInfo.new(0.24, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
@@ -414,12 +417,10 @@ local SlidePanel = {
     active = nil, count = 0, activeTween = nil, initialized = false,
 }
 
--- Posisi tertutup (jauh di kanan luar layar)
 local function slideClosedPos() 
     return UDim2.new(1, 172, 0.5, 0)
 end
 
--- Posisi terbuka (tengah tangga/rapi di dalam)
 local function slideOpenPos() 
     return UDim2.new(1, -11, 0.5, 0)
 end
@@ -430,7 +431,6 @@ local function initSlidePanel()
 
     local mainFrame = S.GUI.MainFrame
 
-    -- OVERLAY (Dikunci tepat di bawah header, tinggi dikurangi 34px)
     local overlay = Instance.new("TextButton")
     overlay.Name = "SlideOverlay"
     overlay.Size = UDim2.new(1, 0, 1, -34) 
@@ -442,14 +442,13 @@ local function initSlidePanel()
     overlay.AutoButtonColor = false
     overlay.Visible = false
     overlay.ZIndex = 150
-    overlay.ClipsDescendants = true -- PENTING: Memotong panel agar tidak keluar
+    overlay.ClipsDescendants = true
     overlay.Parent = mainFrame
     overlay.Activated:Connect(function()
         Lib.HideSlidePanel()
     end)
     SlidePanel.overlay = overlay
 
-    -- PANEL
     local panel = Instance.new("Frame")
     panel.Name = "SlidePanel"
     panel.AnchorPoint = Vector2.new(1, 0.5)
@@ -470,7 +469,6 @@ local function initSlidePanel()
     pStroke.Parent = panel
     SlidePanel.panel = panel
 
-    -- FOLDER
     local folder = Instance.new("Frame")
     folder.Name = "SlideFolder"
     folder.Size = UDim2.new(1, -2, 1, 0)
@@ -481,7 +479,6 @@ local function initSlidePanel()
     folder.Parent = panel
     SlidePanel.folder = folder
 
-    -- PAGE LAYOUT
     local pageLayout = Instance.new("UIPageLayout")
     pageLayout.EasingDirection = Enum.EasingDirection.InOut
     pageLayout.EasingStyle = Enum.EasingStyle.Quad
@@ -538,7 +535,6 @@ function Lib.HideSlidePanel()
     SlidePanel.activeTween = tw
     tw:Play()
 
-    -- Sembunyikan overlay setelah animasi meluncur selesai
     tw.Completed:Connect(function()
         if not SlidePanel.active then
             SlidePanel.overlay.Visible = false
@@ -635,33 +631,44 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     container.LayoutOrder = layoutOrder
     container.Parent = SlidePanel.folder
 
+    -- SEARCH BAR MENYATU DENGAN PANEL
     local searchBox = Instance.new("TextBox")
     searchBox.Name = "SearchBox"
-    searchBox.Size = UDim2.new(1, -8, 0, 24)
-    searchBox.Position = UDim2.new(0, 4, 0, 4)
+    searchBox.Size = UDim2.new(1, 0, 0, 28)
+    searchBox.Position = UDim2.new(0, 0, 0, 0)
     searchBox.Text = ""
     searchBox.PlaceholderText = "Search..."
     searchBox.PlaceholderColor3 = C.textDim2
     searchBox.TextColor3 = C.text
-    searchBox.TextSize = 10
-    searchBox.Font = F.norm
-    searchBox.BackgroundColor3 = C.bg3
-    searchBox.BackgroundTransparency = 0.3
+    searchBox.TextSize = 11
+    searchBox.Font = F.norm -- <--- F.NORM
+    searchBox.BackgroundColor3 = C.bg2
+    searchBox.BackgroundTransparency = 0
     searchBox.BorderSizePixel = 0
     searchBox.TextXAlignment = Enum.TextXAlignment.Left
     searchBox.ClearTextOnFocus = false
     searchBox.Visible = true
     searchBox.ZIndex = 155
     searchBox.Parent = container
-    Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 4)
+    
     local searchPad = Instance.new("UIPadding")
-    searchPad.PaddingLeft = UDim.new(0, 8)
+    searchPad.PaddingLeft = UDim.new(0, 12)
     searchPad.Parent = searchBox
 
+    local searchDivider = Instance.new("Frame")
+    searchDivider.Size = UDim2.new(1, -20, 0, 1)
+    searchDivider.Position = UDim2.new(0, 10, 1, -1)
+    searchDivider.BackgroundColor3 = C.stroke
+    searchDivider.BackgroundTransparency = 0.5
+    searchDivider.BorderSizePixel = 0
+    searchDivider.ZIndex = 156
+    searchDivider.Parent = searchBox
+
+    -- SCROLL SELECT
     local scrollSelect = Instance.new("ScrollingFrame")
     scrollSelect.Name = "OptionsList"
-    scrollSelect.Size = UDim2.new(1, -8, 1, -36)
-    scrollSelect.Position = UDim2.new(0, 4, 0, 32)
+    scrollSelect.Size = UDim2.new(1, 0, 1, -28)
+    scrollSelect.Position = UDim2.new(0, 0, 0, 28)
     scrollSelect.BackgroundTransparency = 1
     scrollSelect.BorderSizePixel = 0
     scrollSelect.ScrollBarThickness = 0
@@ -671,8 +678,15 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     scrollSelect.ZIndex = 154
     scrollSelect.Parent = container
 
+    local listPad = Instance.new("UIPadding")
+    listPad.PaddingTop = UDim.new(0, 2)
+    listPad.PaddingLeft = UDim.new(0, 4)
+    listPad.PaddingRight = UDim.new(0, 4)
+    listPad.Parent = scrollSelect
+
+    -- RAPATKAN JARAK ANTAR OPSI DROPDOWN DISINI
     local listLayout = Instance.new("UIListLayout")
-    listLayout.Padding = UDim.new(0, 3)
+    listLayout.Padding = UDim.new(0, 1) -- <--- UBAH JADI 1
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Parent = scrollSelect
 
