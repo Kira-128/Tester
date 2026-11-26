@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — OOP ARCHITECTURE (SELF)
+  [5] GUI (Flow Hub v2.4) — FINAL OOP (F.BOLD)
 ============================================================
 ]]
 
@@ -42,7 +42,6 @@ end
 -- CREATE WINDOW
 -- ============================================================
 function Library:CreateWindow()
-    -- Hapus GUI lama
     local oldGui = parentGui:FindFirstChild("FlowHub")
     if oldGui then oldGui:Destroy() end
 
@@ -50,8 +49,16 @@ function Library:CreateWindow()
     self.ScreenGui.Name = "FlowHub"
     self.ScreenGui.ResetOnSpawn = false
     self.ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    self.ScreenGui.IgnoreGuiInset = true
+    self.ScreenGui.IgnoreGuiInset = true -- FIX POSISI
     self.ScreenGui.Parent = parentGui
+
+    -- ========================================================
+    -- AMBIL TEKS DARI THEME
+    -- ========================================================
+    local T = S.Theme.Texts or {}
+    local titleText = T.Title or "Flow"
+    local subtitleText = T.Subtitle or "Command An Army"
+    local defaultPageTitle = T.DefaultPageTitle or "Combat"
 
     -- ========================================================
     -- FLOAT BUTTON
@@ -70,7 +77,6 @@ function Library:CreateWindow()
     self.FloatBtn.Visible = false
 
     local fBg = Instance.new("Frame")
-    fBg.Name = "FloatBg"
     fBg.Size = UDim2.new(1, 0, 1, 0)
     fBg.BackgroundColor3 = C.bg2
     fBg.BackgroundTransparency = 0.1
@@ -91,23 +97,17 @@ function Library:CreateWindow()
     self:AddConnection("floatDragStart", self.FloatBtn.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             iconDragging = true; iconDragMoved = false
-            iconDragStart = input.Position
-            iconStartPos = self.FloatBtn.Position
+            iconDragStart = input.Position; iconStartPos = self.FloatBtn.Position
         end
     end))
-    
     self:AddConnection("floatDragChanged", UIS.InputChanged:Connect(function(input)
         if not iconDragging or not iconStartPos or not iconDragStart then return end
         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             local delta = input.Position - iconDragStart
             if delta.Magnitude > 6 then iconDragMoved = true end
-            self.FloatBtn.Position = UDim2.new(
-                iconStartPos.X.Scale, iconStartPos.X.Offset + delta.X,
-                iconStartPos.Y.Scale, iconStartPos.Y.Offset + delta.Y
-            )
+            self.FloatBtn.Position = UDim2.new(iconStartPos.X.Scale, iconStartPos.X.Offset + delta.X, iconStartPos.Y.Scale, iconStartPos.Y.Offset + delta.Y)
         end
     end))
-
     self:AddConnection("floatDragEnd", UIS.InputEnded:Connect(function(input)
         if not iconDragging then return end
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -120,11 +120,11 @@ function Library:CreateWindow()
     end))
 
     -- ========================================================
-    -- MAIN FRAME (470x280)
+    -- MAIN FRAME (450x300)
     -- ========================================================
     self.MainFrame = Instance.new("Frame")
     self.MainFrame.Name = "MainFrame"
-    self.MainFrame.Size = self.IsMobile and UDim2.new(0, 470, 0, 280) or UDim2.new(0, 560, 0, 360)
+    self.MainFrame.Size = self.IsMobile and UDim2.new(0, 450, 0, 300) or UDim2.new(0, 560, 0, 360)
     self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     self.MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     self.MainFrame.BackgroundColor3 = C.panel
@@ -132,7 +132,7 @@ function Library:CreateWindow()
     self.MainFrame.BorderSizePixel = 0
     self.MainFrame.Active = true
     self.MainFrame.Visible = false
-    self.MainFrame.ClipsDescendants = true
+    self.MainFrame.ClipsDescendants = true -- FIX ANTI-BOCOR
     self.MainFrame.Parent = self.ScreenGui
     Instance.new("UICorner", self.MainFrame).CornerRadius = UDim.new(0, 8)
 
@@ -143,7 +143,7 @@ function Library:CreateWindow()
     mStroke.Parent = self.MainFrame
 
     -- ========================================================
-    -- HEADER
+    -- HEADER (TRANSPARAN)
     -- ========================================================
     local HEADER_H = 34
     self.Header = Instance.new("TextButton")
@@ -159,10 +159,10 @@ function Library:CreateWindow()
     local lText = Instance.new("TextLabel")
     lText.Size = UDim2.new(0, 60, 1, 0)
     lText.Position = UDim2.new(0, 12, 0, 0)
-    lText.Text = "Flow"
+    lText.Text = titleText
     lText.TextColor3 = C.accent
     lText.TextSize = 14
-    lText.Font = F.bold
+    lText.Font = F.bold -- GUNAKAN BOLD
     lText.TextXAlignment = Enum.TextXAlignment.Left
     lText.BackgroundTransparency = 1
     lText.ZIndex = 6
@@ -189,10 +189,10 @@ function Library:CreateWindow()
     local sub = Instance.new("TextLabel")
     sub.Size = UDim2.new(0, 200, 1, 0)
     sub.Position = UDim2.new(0, 84, 0, 0)
-    sub.Text = "Command An Army"
+    sub.Text = subtitleText
     sub.TextColor3 = C.textDim
     sub.TextSize = 10
-    sub.Font = F.norm
+    sub.Font = F.bold -- GUNAKAN BOLD
     sub.TextXAlignment = Enum.TextXAlignment.Left
     sub.BackgroundTransparency = 1
     sub.ZIndex = 6
@@ -204,7 +204,7 @@ function Library:CreateWindow()
     self.MinBtn.Text = "−"
     self.MinBtn.TextColor3 = C.accent
     self.MinBtn.TextSize = 14
-    self.MinBtn.Font = F.bold
+    self.MinBtn.Font = F.bold -- GUNAKAN BOLD
     self.MinBtn.BackgroundColor3 = C.bg3
     self.MinBtn.BackgroundTransparency = 0.5
     self.MinBtn.BorderSizePixel = 0
@@ -214,7 +214,6 @@ function Library:CreateWindow()
 
     -- Header Line
     self.HeaderLine = Instance.new("Frame")
-    self.HeaderLine.Name = "HeaderLine"
     self.HeaderLine.Size = UDim2.new(1, -20, 0, 1)
     self.HeaderLine.Position = UDim2.new(0, 10, 0, HEADER_H - 1)
     self.HeaderLine.BackgroundColor3 = C.stroke
@@ -255,7 +254,7 @@ function Library:CreateWindow()
     self.SearchBox.PlaceholderColor3 = C.textDim2
     self.SearchBox.TextColor3 = C.text
     self.SearchBox.TextSize = 10
-    self.SearchBox.Font = F.norm
+    self.SearchBox.Font = F.norm -- SEARCH BIARKAN NORM (OPSIONAL)
     self.SearchBox.BackgroundTransparency = 1
     self.SearchBox.TextXAlignment = Enum.TextXAlignment.Left
     self.SearchBox.ClearTextOnFocus = false
@@ -274,10 +273,10 @@ function Library:CreateWindow()
     self.ContentTitle = Instance.new("TextLabel")
     self.ContentTitle.Size = UDim2.new(1, -200, 0, 26)
     self.ContentTitle.Position = UDim2.new(0.35, 20, 0, ROW_Y)
-    self.ContentTitle.Text = "Combat"
+    self.ContentTitle.Text = defaultPageTitle
     self.ContentTitle.TextColor3 = C.text
     self.ContentTitle.TextSize = 12
-    self.ContentTitle.Font = F.norm -- Sesuai permintaanmu (F.norm)
+    self.ContentTitle.Font = F.bold -- GUNAKAN BOLD
     self.ContentTitle.TextXAlignment = Enum.TextXAlignment.Left
     self.ContentTitle.BackgroundTransparency = 1
     self.ContentTitle.ZIndex = 5
@@ -344,7 +343,7 @@ function Library:CreateWindow()
     self.ContentScroll.Parent = self.ContentPanel
 
     -- ========================================================
-    -- EXPORT KE S.GUI (AGAR 6.LUA BISA BACA)
+    -- EXPORT KE S.GUI
     -- ========================================================
     S.GUI = {
         Screen = self.ScreenGui,
@@ -372,4 +371,4 @@ end
 -- ============================================================
 local FlowUI = Library.new()
 FlowUI:CreateWindow()
-FlowUI.MainFrame.Visible = true -- Tampilkan GUI saat pertama dimuat
+FlowUI.MainFrame.Visible = true
