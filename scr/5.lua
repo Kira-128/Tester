@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [5] GUI (Flow Hub v2.4) — FINAL OOP (F.BOLD)
+  [5] GUI (Flow Hub v2.4) — LYNX HEADER STYLE (FINAL)
 ============================================================
 ]]
 
@@ -10,365 +10,395 @@ local I = S.Theme.Icons
 local F = S.Theme.Font
 local UIS = game:GetService("UserInputService")
 
+-- Deteksi Platform
 local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
 
+-- Anti-Crash gethui
 local parentGui
 local ok, hui = pcall(function() return gethui and gethui() end)
 if ok and hui then parentGui = hui else parentGui = game:GetService("CoreGui") end
 
--- ============================================================
--- LIBRARY CLASS (OOP)
--- ============================================================
-local Library = {}
-Library.__index = Library
+local oldGui = parentGui:FindFirstChild("FlowHub")
+if oldGui then oldGui:Destroy() end
 
-function Library.new()
-    local self = setmetatable({}, Library)
-    self.IsMobile = isMobile
-    self.Pages = {}
-    self.CurrentPage = nil
-    self._connections = {}
-    return self
-end
+local gui = Instance.new("ScreenGui")
+gui.Name = "FlowHub"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.IgnoreGuiInset = true -- FIX: Agar tidak meleset ke bawah
+gui.Parent = parentGui
 
-function Library:AddConnection(name, conn)
-    if self._connections[name] then
-        pcall(function() self._connections[name]:Disconnect() end)
+-- ============================================================
+-- FLOAT BUTTON (KOTAK 48x48 + LOGO FULL)
+-- ============================================================
+local floatBtn = Instance.new("TextButton")
+floatBtn.Name = "FloatBtn"
+floatBtn.Size = UDim2.new(0, 48, 0, 48)
+floatBtn.Position = UDim2.new(0, 30, 0.5, -24)
+floatBtn.Text = ""
+floatBtn.BackgroundTransparency = 1
+floatBtn.BorderSizePixel = 0
+floatBtn.AutoButtonColor = false
+floatBtn.Active = true
+floatBtn.ZIndex = 100
+floatBtn.Parent = gui
+floatBtn.Visible = false
+
+local fBg = Instance.new("Frame")
+fBg.Name = "FloatBg"
+fBg.Size = UDim2.new(1, 0, 1, 0)
+fBg.BackgroundColor3 = C.bg2
+fBg.BackgroundTransparency = 0.1
+fBg.BorderSizePixel = 0
+fBg.Active = false
+fBg.ZIndex = 100
+fBg.Parent = floatBtn
+Instance.new("UICorner", fBg).CornerRadius = UDim.new(0, 12)
+
+local fIcon = Instance.new("ImageLabel")
+fIcon.Name = "FloatLogo"
+fIcon.Size = UDim2.new(1, 0, 1, 0)
+fIcon.Position = UDim2.new(0, 0, 0, 0)
+fIcon.BackgroundTransparency = 1
+fIcon.BorderSizePixel = 0
+fIcon.Image = I.logo
+fIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+fIcon.ScaleType = Enum.ScaleType.Fit
+fIcon.Active = false
+fIcon.ZIndex = 101
+fIcon.Parent = fBg
+
+-- ============================================================
+-- FLOAT BUTTON DRAG LOGIC
+-- ============================================================
+local iconConns = {}
+local savedIconPos = floatBtn.Position
+local iconDragging = false
+local iconDragStart = nil
+local iconStartPos = nil
+local iconDragMoved = false
+local dragThreshold = 6
+
+local function disconnectIconConns()
+    for i = #iconConns, 1, -1 do
+        local c = iconConns[i]
+        iconConns[i] = nil
+        pcall(function() c:Disconnect() end)
     end
-    self._connections[name] = conn
 end
 
--- ============================================================
--- CREATE WINDOW
--- ============================================================
-function Library:CreateWindow()
-    local oldGui = parentGui:FindFirstChild("FlowHub")
-    if oldGui then oldGui:Destroy() end
+iconConns[#iconConns + 1] = floatBtn.InputBegan:Connect(function(input)
+    if iconDragging then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        iconDragging = true
+        iconDragMoved = false
+        iconDragStart = input.Position
+        iconStartPos = floatBtn.Position
+    end
+end)
 
-    self.ScreenGui = Instance.new("ScreenGui")
-    self.ScreenGui.Name = "FlowHub"
-    self.ScreenGui.ResetOnSpawn = false
-    self.ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    self.ScreenGui.IgnoreGuiInset = true -- FIX POSISI
-    self.ScreenGui.Parent = parentGui
-
-    -- ========================================================
-    -- AMBIL TEKS DARI THEME
-    -- ========================================================
-    local T = S.Theme.Texts or {}
-    local titleText = T.Title or "Flow"
-    local subtitleText = T.Subtitle or "Command An Army"
-    local defaultPageTitle = T.DefaultPageTitle or "Combat"
-
-    -- ========================================================
-    -- FLOAT BUTTON
-    -- ========================================================
-    self.FloatBtn = Instance.new("TextButton")
-    self.FloatBtn.Name = "FloatBtn"
-    self.FloatBtn.Size = UDim2.new(0, 48, 0, 48)
-    self.FloatBtn.Position = UDim2.new(0, 30, 0.5, -24)
-    self.FloatBtn.Text = ""
-    self.FloatBtn.BackgroundTransparency = 1
-    self.FloatBtn.BorderSizePixel = 0
-    self.FloatBtn.AutoButtonColor = false
-    self.FloatBtn.Active = true
-    self.FloatBtn.ZIndex = 100
-    self.FloatBtn.Parent = self.ScreenGui
-    self.FloatBtn.Visible = false
-
-    local fBg = Instance.new("Frame")
-    fBg.Size = UDim2.new(1, 0, 1, 0)
-    fBg.BackgroundColor3 = C.bg2
-    fBg.BackgroundTransparency = 0.1
-    fBg.BorderSizePixel = 0
-    fBg.Parent = self.FloatBtn
-    Instance.new("UICorner", fBg).CornerRadius = UDim.new(0, 12)
-
-    local fIcon = Instance.new("ImageLabel")
-    fIcon.Size = UDim2.new(1, 0, 1, 0)
-    fIcon.BackgroundTransparency = 1
-    fIcon.Image = I.logo
-    fIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-    fIcon.ScaleType = Enum.ScaleType.Fit
-    fIcon.Parent = fBg
-
-    -- Float Drag Logic
-    local iconDragging, iconDragStart, iconStartPos, iconDragMoved = false, nil, nil, false
-    self:AddConnection("floatDragStart", self.FloatBtn.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            iconDragging = true; iconDragMoved = false
-            iconDragStart = input.Position; iconStartPos = self.FloatBtn.Position
+iconConns[#iconConns + 1] = UIS.InputChanged:Connect(function(input)
+    if not iconDragging or not floatBtn or not floatBtn.Parent or not iconStartPos or not iconDragStart then return end
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        local delta = input.Position - iconDragStart
+        if delta.Magnitude > dragThreshold then
+            iconDragMoved = true
         end
-    end))
-    self:AddConnection("floatDragChanged", UIS.InputChanged:Connect(function(input)
-        if not iconDragging or not iconStartPos or not iconDragStart then return end
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            local delta = input.Position - iconDragStart
-            if delta.Magnitude > 6 then iconDragMoved = true end
-            self.FloatBtn.Position = UDim2.new(iconStartPos.X.Scale, iconStartPos.X.Offset + delta.X, iconStartPos.Y.Scale, iconStartPos.Y.Offset + delta.Y)
-        end
-    end))
-    self:AddConnection("floatDragEnd", UIS.InputEnded:Connect(function(input)
-        if not iconDragging then return end
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            iconDragging = false
+        floatBtn.Position = UDim2.new(
+            iconStartPos.X.Scale, iconStartPos.X.Offset + delta.X,
+            iconStartPos.Y.Scale, iconStartPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+iconConns[#iconConns + 1] = UIS.InputEnded:Connect(function(input)
+    if not iconDragging then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        iconDragging = false
+        if floatBtn and floatBtn.Parent then
+            savedIconPos = floatBtn.Position
             if not iconDragMoved then
-                self.FloatBtn.Visible = false
-                self.MainFrame.Visible = true
+                floatBtn.Visible = false
+                if S.GUI and S.GUI.MainFrame then
+                    S.GUI.MainFrame.Visible = true
+                end
             end
         end
-    end))
+    end
+end)
 
-    -- ========================================================
-    -- MAIN FRAME (450x300)
-    -- ========================================================
-    self.MainFrame = Instance.new("Frame")
-    self.MainFrame.Name = "MainFrame"
-    self.MainFrame.Size = self.IsMobile and UDim2.new(0, 450, 0, 300) or UDim2.new(0, 560, 0, 360)
-    self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    self.MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    self.MainFrame.BackgroundColor3 = C.panel
-    self.MainFrame.BackgroundTransparency = 0.1
-    self.MainFrame.BorderSizePixel = 0
-    self.MainFrame.Active = true
-    self.MainFrame.Visible = false
-    self.MainFrame.ClipsDescendants = true -- FIX ANTI-BOCOR
-    self.MainFrame.Parent = self.ScreenGui
-    Instance.new("UICorner", self.MainFrame).CornerRadius = UDim.new(0, 8)
+_G.FlowHubSavedIconPos = savedIconPos
 
-    local mStroke = Instance.new("UIStroke")
-    mStroke.Color = C.stroke
-    mStroke.Thickness = 1
-    mStroke.Transparency = 0.3
-    mStroke.Parent = self.MainFrame
+-- ============================================================
+-- MAIN FRAME (470x280 & FIX POSISI)
+-- ============================================================
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
 
-    -- ========================================================
-    -- HEADER (TRANSPARAN)
-    -- ========================================================
-    local HEADER_H = 34
-    self.Header = Instance.new("TextButton")
-    self.Header.Name = "Header"
-    self.Header.Size = UDim2.new(1, 0, 0, HEADER_H)
-    self.Header.BackgroundTransparency = 1
-    self.Header.Text = ""
-    self.Header.AutoButtonColor = false
-    self.Header.Active = true
-    self.Header.ZIndex = 5
-    self.Header.Parent = self.MainFrame
-
-    local lText = Instance.new("TextLabel")
-    lText.Size = UDim2.new(0, 60, 1, 0)
-    lText.Position = UDim2.new(0, 12, 0, 0)
-    lText.Text = titleText
-    lText.TextColor3 = C.accent
-    lText.TextSize = 14
-    lText.Font = F.bold -- GUNAKAN BOLD
-    lText.TextXAlignment = Enum.TextXAlignment.Left
-    lText.BackgroundTransparency = 1
-    lText.ZIndex = 6
-    lText.Parent = self.Header
-
-    local lIcon = Instance.new("ImageLabel")
-    lIcon.Size = UDim2.new(0, 16, 0, 16)
-    lIcon.Position = UDim2.new(0, 48, 0.5, -8)
-    lIcon.BackgroundTransparency = 1
-    lIcon.Image = I.icon
-    lIcon.ImageColor3 = C.accent
-    lIcon.ScaleType = Enum.ScaleType.Fit
-    lIcon.ZIndex = 6
-    lIcon.Parent = self.Header
-
-    local sep = Instance.new("Frame")
-    sep.Size = UDim2.new(0, 1, 0, 16)
-    sep.Position = UDim2.new(0, 74, 0.5, -8)
-    sep.BackgroundColor3 = C.stroke
-    sep.BorderSizePixel = 0
-    sep.ZIndex = 6
-    sep.Parent = self.Header
-
-    local sub = Instance.new("TextLabel")
-    sub.Size = UDim2.new(0, 200, 1, 0)
-    sub.Position = UDim2.new(0, 84, 0, 0)
-    sub.Text = subtitleText
-    sub.TextColor3 = C.textDim
-    sub.TextSize = 10
-    sub.Font = F.bold -- GUNAKAN BOLD
-    sub.TextXAlignment = Enum.TextXAlignment.Left
-    sub.BackgroundTransparency = 1
-    sub.ZIndex = 6
-    sub.Parent = self.Header
-
-    self.MinBtn = Instance.new("TextButton")
-    self.MinBtn.Size = UDim2.new(0, 22, 0, 22)
-    self.MinBtn.Position = UDim2.new(1, -30, 0.5, -11)
-    self.MinBtn.Text = "−"
-    self.MinBtn.TextColor3 = C.accent
-    self.MinBtn.TextSize = 14
-    self.MinBtn.Font = F.bold -- GUNAKAN BOLD
-    self.MinBtn.BackgroundColor3 = C.bg3
-    self.MinBtn.BackgroundTransparency = 0.5
-    self.MinBtn.BorderSizePixel = 0
-    self.MinBtn.ZIndex = 7
-    self.MinBtn.Parent = self.Header
-    Instance.new("UICorner", self.MinBtn).CornerRadius = UDim.new(0, 4)
-
-    -- Header Line
-    self.HeaderLine = Instance.new("Frame")
-    self.HeaderLine.Size = UDim2.new(1, -20, 0, 1)
-    self.HeaderLine.Position = UDim2.new(0, 10, 0, HEADER_H - 1)
-    self.HeaderLine.BackgroundColor3 = C.stroke
-    self.HeaderLine.BackgroundTransparency = 0.62
-    self.HeaderLine.BorderSizePixel = 0
-    self.HeaderLine.ZIndex = 4
-    self.HeaderLine.Parent = self.MainFrame
-
-    -- ========================================================
-    -- SEARCH & TITLE
-    -- ========================================================
-    local ROW_Y = HEADER_H + 8
-
-    self.SearchFrame = Instance.new("Frame")
-    self.SearchFrame.Size = UDim2.new(0.35, 0, 0, 26)
-    self.SearchFrame.Position = UDim2.new(0, 10, 0, ROW_Y)
-    self.SearchFrame.BackgroundColor3 = C.bg2
-    self.SearchFrame.BackgroundTransparency = 0.1
-    self.SearchFrame.BorderSizePixel = 0
-    self.SearchFrame.ZIndex = 5
-    self.SearchFrame.Parent = self.MainFrame
-    Instance.new("UICorner", self.SearchFrame).CornerRadius = UDim.new(0, 5)
-
-    local sIcon = Instance.new("ImageLabel")
-    sIcon.Size = UDim2.new(0, 10, 0, 10)
-    sIcon.Position = UDim2.new(0, 9, 0.5, -5)
-    sIcon.BackgroundTransparency = 1
-    sIcon.Image = I.search
-    sIcon.ImageColor3 = C.textDim
-    sIcon.ZIndex = 6
-    sIcon.Parent = self.SearchFrame
-
-    self.SearchBox = Instance.new("TextBox")
-    self.SearchBox.Size = UDim2.new(1, -30, 1, 0)
-    self.SearchBox.Position = UDim2.new(0, 26, 0, 0)
-    self.SearchBox.Text = ""
-    self.SearchBox.PlaceholderText = "Search feature.."
-    self.SearchBox.PlaceholderColor3 = C.textDim2
-    self.SearchBox.TextColor3 = C.text
-    self.SearchBox.TextSize = 10
-    self.SearchBox.Font = F.norm -- SEARCH BIARKAN NORM (OPSIONAL)
-    self.SearchBox.BackgroundTransparency = 1
-    self.SearchBox.TextXAlignment = Enum.TextXAlignment.Left
-    self.SearchBox.ClearTextOnFocus = false
-    self.SearchBox.ZIndex = 6
-    self.SearchBox.Parent = self.SearchFrame
-
-    self.TitleDivider = Instance.new("Frame")
-    self.TitleDivider.Size = UDim2.new(0, 2, 0, 18)
-    self.TitleDivider.Position = UDim2.new(0.35, 10, 0, ROW_Y + 4)
-    self.TitleDivider.BackgroundColor3 = C.accent
-    self.TitleDivider.BorderSizePixel = 0
-    self.TitleDivider.ZIndex = 5
-    self.TitleDivider.Parent = self.MainFrame
-    Instance.new("UICorner", self.TitleDivider).CornerRadius = UDim.new(1, 0)
-
-    self.ContentTitle = Instance.new("TextLabel")
-    self.ContentTitle.Size = UDim2.new(1, -200, 0, 26)
-    self.ContentTitle.Position = UDim2.new(0.35, 20, 0, ROW_Y)
-    self.ContentTitle.Text = defaultPageTitle
-    self.ContentTitle.TextColor3 = C.text
-    self.ContentTitle.TextSize = 12
-    self.ContentTitle.Font = F.bold -- GUNAKAN BOLD
-    self.ContentTitle.TextXAlignment = Enum.TextXAlignment.Left
-    self.ContentTitle.BackgroundTransparency = 1
-    self.ContentTitle.ZIndex = 5
-    self.ContentTitle.Parent = self.MainFrame
-
-    self.TitleLine = Instance.new("Frame")
-    self.TitleLine.Size = UDim2.new(1, -200, 0, 1)
-    self.TitleLine.Position = UDim2.new(0.35, 20, 0, ROW_Y + 28)
-    self.TitleLine.BackgroundColor3 = C.stroke
-    self.TitleLine.BackgroundTransparency = 0.3
-    self.TitleLine.BorderSizePixel = 0
-    self.TitleLine.ZIndex = 5
-    self.TitleLine.Parent = self.MainFrame
-
-    -- ========================================================
-    -- SIDEBAR & CONTENT
-    -- ========================================================
-    local SIDEBAR_Y = ROW_Y + 38
-
-    self.Sidebar = Instance.new("ScrollingFrame")
-    self.Sidebar.Name = "Sidebar"
-    self.Sidebar.Size = UDim2.new(0, 120, 1, -(SIDEBAR_Y + 10))
-    self.Sidebar.Position = UDim2.new(0, 10, 0, SIDEBAR_Y)
-    self.Sidebar.BackgroundTransparency = 1
-    self.Sidebar.BorderSizePixel = 0
-    self.Sidebar.ScrollBarThickness = 0
-    self.Sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
-    self.Sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    self.Sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
-    self.Sidebar.ClipsDescendants = true
-    self.Sidebar.ZIndex = 5
-    self.Sidebar.Parent = self.MainFrame
-
-    local sLayout = Instance.new("UIListLayout")
-    sLayout.Padding = UDim.new(0, 4)
-    sLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    sLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-    sLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    sLayout.Parent = self.Sidebar
-
-    self.ContentPanel = Instance.new("Frame")
-    self.ContentPanel.Name = "ContentPanel"
-    self.ContentPanel.Size = UDim2.new(1, -140, 1, -(SIDEBAR_Y + 10))
-    self.ContentPanel.Position = UDim2.new(0, 130, 0, SIDEBAR_Y)
-    self.ContentPanel.BackgroundTransparency = 1
-    self.ContentPanel.BorderSizePixel = 0
-    self.ContentPanel.ClipsDescendants = true
-    self.ContentPanel.ZIndex = 5
-    self.ContentPanel.Parent = self.MainFrame
-
-    self.ContentScroll = Instance.new("ScrollingFrame")
-    self.ContentScroll.Name = "ContentScroll"
-    self.ContentScroll.Size = UDim2.new(1, 0, 1, 0)
-    self.ContentScroll.BackgroundTransparency = 1
-    self.ContentScroll.BorderSizePixel = 0
-    self.ContentScroll.ClipsDescendants = true
-    self.ContentScroll.ScrollBarThickness = 3
-    self.ContentScroll.ScrollBarImageColor3 = C.accent
-    self.ContentScroll.ScrollBarImageTransparency = 0.4
-    self.ContentScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-    self.ContentScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    self.ContentScroll.ScrollingDirection = Enum.ScrollingDirection.Y
-    self.ContentScroll.ZIndex = 5
-    self.ContentScroll.Parent = self.ContentPanel
-
-    -- ========================================================
-    -- EXPORT KE S.GUI
-    -- ========================================================
-    S.GUI = {
-        Screen = self.ScreenGui,
-        FloatBtn = self.FloatBtn,
-        MainFrame = self.MainFrame,
-        Header = self.Header,
-        Sidebar = self.Sidebar,
-        Content = self.ContentPanel,
-        ContentScroll = self.ContentScroll,
-        ContentTitle = self.ContentTitle,
-        TitleLine = self.TitleLine,
-        HeaderLine = self.HeaderLine,
-        TitleDivider = self.TitleDivider,
-        SearchBox = self.SearchBox,
-        MinBtn = self.MinBtn,
-        CloseBtn = nil,
-        IsMobile = self.IsMobile,
-    }
-
-    return self
+if isMobile then
+    mainFrame.Size = UDim2.new(0, 470, 0, 280)
+else
+    mainFrame.Size = UDim2.new(0, 560, 0, 360)
 end
 
+-- FIX POSISI AGAR PAS DI TENGAH
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+
+mainFrame.BackgroundColor3 = C.panel
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Visible = false
+mainFrame.ClipsDescendants = true
+mainFrame.Parent = gui
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
+
+local mStroke = Instance.new("UIStroke")
+mStroke.Color = C.stroke
+mStroke.Thickness = 1
+mStroke.Transparency = 0.3
+mStroke.Parent = mainFrame
+
 -- ============================================================
--- START GUI
+-- HEADER (LYNX STYLE)
 -- ============================================================
-local FlowUI = Library.new()
-FlowUI:CreateWindow()
-FlowUI.MainFrame.Visible = true
+local HEADER_H = 34
+
+local header = Instance.new("TextButton")
+header.Name = "Header"
+header.Size = UDim2.new(1, 0, 0, HEADER_H)
+header.BackgroundTransparency = 1
+header.Text = ""
+header.AutoButtonColor = false
+header.Active = true
+header.ZIndex = 5
+header.Parent = mainFrame
+
+-- Teks "Flow"
+local lText = Instance.new("TextLabel")
+lText.Size = UDim2.new(0, 60, 1, 0)
+lText.Position = UDim2.new(0, 12, 0, 0)
+lText.Text = "Flow"
+lText.TextColor3 = C.accent
+lText.TextSize = 14
+lText.Font = F.bold
+lText.TextXAlignment = Enum.TextXAlignment.Left
+lText.BackgroundTransparency = 1
+lText.ZIndex = 6
+lText.Parent = header
+
+-- Ikon
+local lIcon = Instance.new("ImageLabel")
+lIcon.Size = UDim2.new(0, 16, 0, 16)
+lIcon.Position = UDim2.new(0, 48, 0.5, -8)
+lIcon.BackgroundTransparency = 1
+lIcon.Image = I.icon
+lIcon.ImageColor3 = C.accent
+lIcon.ScaleType = Enum.ScaleType.Fit
+lIcon.ZIndex = 6
+lIcon.Parent = header
+
+-- Garis Pemisah Vertikal
+local sep = Instance.new("Frame")
+sep.Size = UDim2.new(0, 1, 0, 16)
+sep.Position = UDim2.new(0, 74, 0.5, -8)
+sep.BackgroundColor3 = C.stroke
+sep.BorderSizePixel = 0
+sep.ZIndex = 6
+sep.Parent = header
+
+-- Subtitle
+local sub = Instance.new("TextLabel")
+sub.Size = UDim2.new(0, 200, 1, 0)
+sub.Position = UDim2.new(0, 84, 0, 0)
+sub.Text = "Command An Army"
+sub.TextColor3 = C.textDim
+sub.TextSize = 10
+sub.Font = F.norm
+sub.TextXAlignment = Enum.TextXAlignment.Left
+sub.BackgroundTransparency = 1
+sub.ZIndex = 6
+sub.Parent = header
+
+-- Tombol Minimize
+local minBtn = Instance.new("TextButton")
+minBtn.Size = UDim2.new(0, 22, 0, 22)
+minBtn.Position = UDim2.new(1, -30, 0.5, -11)
+minBtn.Text = "−"
+minBtn.TextColor3 = C.accent
+minBtn.TextSize = 14
+minBtn.Font = F.bold
+minBtn.BackgroundColor3 = C.bg3
+minBtn.BackgroundTransparency = 0.5
+minBtn.BorderSizePixel = 0
+minBtn.ZIndex = 7
+minBtn.Parent = header
+Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
+
+-- ============================================================
+-- GARIS HEADER (PUDAR & ADA JARAK)
+-- ============================================================
+local line1 = Instance.new("Frame")
+line1.Name = "HeaderLine"
+line1.Size = UDim2.new(1, -20, 0, 1)
+line1.Position = UDim2.new(0, 10, 0, HEADER_H - 1)
+line1.BackgroundColor3 = C.stroke
+line1.BackgroundTransparency = 0.62 
+line1.BorderSizePixel = 0
+line1.ZIndex = 4
+line1.Parent = mainFrame
+
+-- ============================================================
+-- SEARCH + TITLE
+-- ============================================================
+local ROW_Y = HEADER_H + 8
+
+local searchFrame = Instance.new("Frame")
+searchFrame.Size = UDim2.new(0.35, 0, 0, 26)
+searchFrame.Position = UDim2.new(0, 10, 0, ROW_Y)
+searchFrame.BackgroundColor3 = C.bg2
+searchFrame.BackgroundTransparency = 0.1
+searchFrame.BorderSizePixel = 0
+searchFrame.ZIndex = 5
+searchFrame.Parent = mainFrame
+Instance.new("UICorner", searchFrame).CornerRadius = UDim.new(0, 5)
+
+local sIcon = Instance.new("ImageLabel")
+sIcon.Size = UDim2.new(0, 10, 0, 10)
+sIcon.Position = UDim2.new(0, 9, 0.5, -5)
+sIcon.BackgroundTransparency = 1
+sIcon.Image = I.search
+sIcon.ImageColor3 = C.textDim
+sIcon.ZIndex = 6
+sIcon.Parent = searchFrame
+
+local searchBox = Instance.new("TextBox")
+searchBox.Size = UDim2.new(1, -30, 1, 0)
+searchBox.Position = UDim2.new(0, 26, 0, 0)
+searchBox.Text = ""
+searchBox.PlaceholderText = "Search feature.."
+searchBox.PlaceholderColor3 = C.textDim2
+searchBox.TextColor3 = C.text
+searchBox.TextSize = 10
+searchBox.Font = F.norm
+searchBox.BackgroundTransparency = 1
+searchBox.TextXAlignment = Enum.TextXAlignment.Left
+searchBox.ClearTextOnFocus = false
+searchBox.ZIndex = 6
+searchBox.Parent = searchFrame
+
+local vDivider = Instance.new("Frame")
+vDivider.Name = "TitleDivider"
+vDivider.Size = UDim2.new(0, 2, 0, 18)
+vDivider.Position = UDim2.new(0.35, 10, 0, ROW_Y + 4)
+vDivider.BackgroundColor3 = C.accent
+vDivider.BorderSizePixel = 0
+vDivider.ZIndex = 5
+vDivider.Parent = mainFrame
+Instance.new("UICorner", vDivider).CornerRadius = UDim.new(1, 0)
+
+local cTitle = Instance.new("TextLabel")
+cTitle.Size = UDim2.new(1, -200, 0, 26)
+cTitle.Position = UDim2.new(0.35, 20, 0, ROW_Y)
+cTitle.Text = "Combat"
+cTitle.TextColor3 = C.text
+cTitle.TextSize = 12
+cTitle.Font = F.bold
+cTitle.TextXAlignment = Enum.TextXAlignment.Left
+cTitle.BackgroundTransparency = 1
+cTitle.ZIndex = 5
+cTitle.Parent = mainFrame
+
+-- Garis Bawah Judul (TitleLine)
+local line2 = Instance.new("Frame")
+line2.Name = "TitleLine"
+line2.Size = UDim2.new(1, -200, 0, 1)
+line2.Position = UDim2.new(0.35, 20, 0, ROW_Y + 28)
+line2.BackgroundColor3 = C.stroke
+line2.BackgroundTransparency = 0.3
+line2.BorderSizePixel = 0
+line2.ZIndex = 5
+line2.Parent = mainFrame
+
+-- ============================================================
+-- SIDEBAR
+-- ============================================================
+local SIDEBAR_Y = ROW_Y + 38
+
+local sidebar = Instance.new("ScrollingFrame")
+sidebar.Name = "Sidebar"
+sidebar.Size = UDim2.new(0, 120, 1, -(SIDEBAR_Y + 10))
+sidebar.Position = UDim2.new(0, 10, 0, SIDEBAR_Y)
+sidebar.BackgroundTransparency = 1
+sidebar.BorderSizePixel = 0
+sidebar.ScrollBarThickness = 0
+sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
+sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
+sidebar.ClipsDescendants = true
+sidebar.ZIndex = 5
+sidebar.Parent = mainFrame
+
+local sLayout = Instance.new("UIListLayout")
+sLayout.Padding = UDim.new(0, 4)
+sLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+sLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+sLayout.SortOrder = Enum.SortOrder.LayoutOrder
+sLayout.Parent = sidebar
+
+local sPad = Instance.new("UIPadding")
+sPad.PaddingTop = UDim.new(0, 0)
+sPad.PaddingBottom = UDim.new(0, 4)
+sPad.Parent = sidebar
+
+-- ============================================================
+-- CONTENT PANEL
+-- ============================================================
+local contentPanel = Instance.new("Frame")
+contentPanel.Name = "ContentPanel"
+contentPanel.Size = UDim2.new(1, -140, 1, -(SIDEBAR_Y + 10))
+contentPanel.Position = UDim2.new(0, 130, 0, SIDEBAR_Y)
+contentPanel.BackgroundTransparency = 1
+contentPanel.BorderSizePixel = 0
+contentPanel.ClipsDescendants = true
+contentPanel.ZIndex = 5
+contentPanel.Parent = mainFrame
+
+local contentScroll = Instance.new("ScrollingFrame")
+contentScroll.Name = "ContentScroll"
+contentScroll.Size = UDim2.new(1, 0, 1, 0)
+contentScroll.Position = UDim2.new(0, 0, 0, 0)
+contentScroll.BackgroundTransparency = 1
+contentScroll.BorderSizePixel = 0
+contentScroll.ClipsDescendants = true
+contentScroll.ScrollBarThickness = 3
+contentScroll.ScrollBarImageColor3 = C.accent
+contentScroll.ScrollBarImageTransparency = 0.4
+contentScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+contentScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+contentScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+contentScroll.ElasticBehavior = Enum.ElasticBehavior.Never
+contentScroll.ZIndex = 5
+contentScroll.Parent = contentPanel
+
+-- ============================================================
+-- EXPORT
+-- ============================================================
+S.GUI = {
+    Screen = gui,
+    FloatBtn = floatBtn,
+    MainFrame = mainFrame,
+    Header = header,
+    Sidebar = sidebar,
+    Content = contentPanel,
+    ContentScroll = contentScroll,
+    ContentTitle = cTitle,
+    TitleLine = line2,
+    HeaderLine = line1,
+    TitleDivider = vDivider,
+    SearchBox = searchBox,
+    MinBtn = minBtn,
+    CloseBtn = nil,
+    IsMobile = isMobile,
+}
