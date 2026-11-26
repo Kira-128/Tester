@@ -1,6 +1,6 @@
 --[[
 ============================================================
-  [6] LIBRARY (Flow Hub v2.4) — RAPAT & PADAT (LYNX STYLE)
+  [6] LIBRARY (Flow Hub v2.4) — RAPI, RAPAT, F.NORM
 ============================================================
 ]]
 
@@ -9,7 +9,7 @@ local C = S.Theme.Colors
 local F = S.Theme.Font
 
 local Lib = {}
-local ITEM_H = 34
+local ITEM_H = 32 -- Sedikit dikecilkan dari 34 agar lebih rapat
 local HEADER_H = 30
 local CARD_BG = C.bg3
 local CARD_TRANS = 0.15
@@ -66,7 +66,7 @@ local function recalcSection(card, content)
 
     local layout = content:FindFirstChildOfClass("UIListLayout")
     local totalH = layout and layout.AbsoluteContentSize.Y or 0
-    -- Margin bawah diperkecil agar kotak tidak melar
+    -- Margin bawah diperkecil agar tidak melar
     card.Size = UDim2.new(1, 0, 0, HEADER_H + totalH + 2)
 
     task.defer(function()
@@ -90,7 +90,7 @@ local function hookAutoRecalc(card, content)
 end
 
 -- ============================================================
--- SECTION
+-- SECTION (TANPA GARIS)
 -- ============================================================
 function Lib.makeSection(parent, title, defaultOpen)
     local card = Instance.new("Frame")
@@ -102,6 +102,8 @@ function Lib.makeSection(parent, title, defaultOpen)
     card.ClipsDescendants = true
     card.Parent = parent
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 6)
+
+    -- Garis (UIStroke) dihapus sesuai permintaan
 
     local header = Instance.new("TextButton")
     header.Name = "Header"
@@ -120,7 +122,7 @@ function Lib.makeSection(parent, title, defaultOpen)
     titleLbl.Text = title
     titleLbl.TextColor3 = C.text
     titleLbl.TextSize = 11
-    titleLbl.Font = F.bold
+    titleLbl.Font = F.norm -- UBAH JADI NORM
     titleLbl.TextXAlignment = Enum.TextXAlignment.Left
     titleLbl.BackgroundTransparency = 1
     titleLbl.ZIndex = 3
@@ -133,7 +135,7 @@ function Lib.makeSection(parent, title, defaultOpen)
     arrow.Text = defaultOpen and "▼" or "▶"
     arrow.TextColor3 = C.accent
     arrow.TextSize = 10
-    arrow.Font = F.bold
+    arrow.Font = F.norm -- UBAH JADI NORM
     arrow.BackgroundTransparency = 1
     arrow.ZIndex = 3
     arrow.Parent = header
@@ -148,16 +150,15 @@ function Lib.makeSection(parent, title, defaultOpen)
     content.ZIndex = 2
     content.Parent = card
 
-    -- RAPATKAN JARAK ANTAR BUTTON DISINI (PADDING 1)
+    -- RAPATKAN JARAK ANTAR BUTTON
     local contentLayout = Instance.new("UIListLayout")
-    contentLayout.Padding = UDim.new(0, 1) -- <--- UBAH JADI 1 (SEBELUMNYA MUNGKIN 3/4)
+    contentLayout.Padding = UDim.new(0, 1)
     contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
     contentLayout.Parent = content
 
-    -- RAPATKAN PADDING LUAR
     local cPad = Instance.new("UIPadding")
-    cPad.PaddingTop = UDim.new(0, 2)    -- <--- UBAH DARI 4 JADI 2
-    cPad.PaddingBottom = UDim.new(0, 2) -- <--- UBAH DARI 6 JADI 2
+    cPad.PaddingTop = UDim.new(0, 2)
+    cPad.PaddingBottom = UDim.new(0, 2)
     cPad.Parent = content
 
     local isOpen = defaultOpen
@@ -195,7 +196,7 @@ function Lib.makeToggle(parent, name, default, callback, configPath)
     l.Text = name
     l.TextColor3 = C.text
     l.TextSize = 10
-    l.Font = F.bold
+    l.Font = F.norm -- UBAH JADI NORM
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -267,7 +268,7 @@ function Lib.makeInput(parent, name, default, callback)
     l.Text = name
     l.TextColor3 = C.text
     l.TextSize = 10
-    l.Font = F.bold
+    l.Font = F.norm -- UBAH JADI NORM
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -279,7 +280,7 @@ function Lib.makeInput(parent, name, default, callback)
     b.Text = tostring(default)
     b.TextColor3 = C.text
     b.TextSize = 10
-    b.Font = F.bold
+    b.Font = F.norm -- UBAH JADI NORM
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -315,7 +316,7 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     l.Text = name
     l.TextColor3 = C.text
     l.TextSize = 10
-    l.Font = F.bold
+    l.Font = F.norm -- UBAH JADI NORM
     l.TextXAlignment = Enum.TextXAlignment.Left
     l.BackgroundTransparency = 1
     l.Parent = f
@@ -330,7 +331,7 @@ function Lib.makeTextInput(parent, name, default, placeholder, callback)
     b.PlaceholderColor3 = C.textDim2
     b.TextColor3 = C.text
     b.TextSize = 10
-    b.Font = F.bold
+    b.Font = F.norm -- UBAH JADI NORM
     b.BackgroundColor3 = C.bg4
     b.BorderSizePixel = 0
     b.ClearTextOnFocus = false
@@ -358,7 +359,7 @@ function Lib.makeButton(parent, name, callback, noHover)
     b.Text = name
     b.TextColor3 = C.text
     b.TextSize = 10
-    b.Font = F.bold
+    b.Font = F.norm -- UBAH JADI NORM
     b.BackgroundColor3 = C.bg4
     b.BackgroundTransparency = 0.3
     b.BorderSizePixel = 0
@@ -406,7 +407,7 @@ function Lib.makeButton(parent, name, callback, noHover)
 end
 
 -- ============================================================
--- DROPDOWN (FIXED & RAPAT)
+-- DROPDOWN (FIXED: WARNA KONSISTEN, F.NORM, SEARCH FIX)
 -- ============================================================
 local PANEL_W = 160
 local TWEEN_IN  = TweenInfo.new(0.24, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
@@ -462,12 +463,8 @@ local function initSlidePanel()
     panel.Parent = overlay 
     Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 6)
     
-    local pStroke = Instance.new("UIStroke")
-    pStroke.Color = C.stroke
-    pStroke.Thickness = 1
-    pStroke.Transparency = 0.45
-    pStroke.Parent = panel
-    SlidePanel.panel = panel
+    -- Garis (UIStroke) dihapus agar menyatu
+    -- local pStroke = Instance.new("UIStroke") ...
 
     local folder = Instance.new("Frame")
     folder.Name = "SlideFolder"
@@ -563,7 +560,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     lbl.Text = name
     lbl.TextColor3 = C.text
     lbl.TextSize = 10
-    lbl.Font = F.bold
+    lbl.Font = F.norm -- UBAH JADI NORM
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.BackgroundTransparency = 1
     lbl.Parent = f
@@ -582,11 +579,8 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     dropdownBtn.Parent = f
     Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(0, 4)
 
-    local btnStroke = Instance.new("UIStroke")
-    btnStroke.Color = C.stroke
-    btnStroke.Thickness = 1
-    btnStroke.Transparency = 0.5
-    btnStroke.Parent = dropdownBtn
+    -- Garis (UIStroke) dihapus agar menyatu
+    -- local btnStroke = Instance.new("UIStroke") ...
 
     local optionLabel = Instance.new("TextLabel")
     optionLabel.Size = UDim2.new(1, -24, 1, 0)
@@ -594,7 +588,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     optionLabel.Text = "Select..."
     optionLabel.TextColor3 = C.textDim
     optionLabel.TextSize = 10
-    optionLabel.Font = F.bold
+    optionLabel.Font = F.norm -- UBAH JADI NORM
     optionLabel.TextXAlignment = Enum.TextXAlignment.Left
     optionLabel.TextTruncate = Enum.TextTruncate.AtEnd
     optionLabel.BackgroundTransparency = 1
@@ -631,7 +625,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     container.LayoutOrder = layoutOrder
     container.Parent = SlidePanel.folder
 
-    -- SEARCH BAR MENYATU DENGAN PANEL
+    -- SEARCH BAR MENYATU DENGAN PANEL & FIX KURSOR
     local searchBox = Instance.new("TextBox")
     searchBox.Name = "SearchBox"
     searchBox.Size = UDim2.new(1, 0, 0, 28)
@@ -641,9 +635,9 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchBox.PlaceholderColor3 = C.textDim2
     searchBox.TextColor3 = C.text
     searchBox.TextSize = 11
-    searchBox.Font = F.norm -- <--- F.NORM
-    searchBox.BackgroundColor3 = C.bg2
-    searchBox.BackgroundTransparency = 0
+    searchBox.Font = F.norm -- UBAH JADI NORM
+    searchBox.BackgroundColor3 = C.bg2 -- Konsisten dengan panel
+    searchBox.BackgroundTransparency = 0 -- Menyatu
     searchBox.BorderSizePixel = 0
     searchBox.TextXAlignment = Enum.TextXAlignment.Left
     searchBox.ClearTextOnFocus = false
@@ -651,18 +645,13 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     searchBox.ZIndex = 155
     searchBox.Parent = container
     
+    -- PADDING KIRI AGAR KURSOR TIDAK NEMPEL
     local searchPad = Instance.new("UIPadding")
-    searchPad.PaddingLeft = UDim.new(0, 12)
+    searchPad.PaddingLeft = UDim.new(0, 10) -- Jarak kursor dari pinggir
     searchPad.Parent = searchBox
 
-    local searchDivider = Instance.new("Frame")
-    searchDivider.Size = UDim2.new(1, -20, 0, 1)
-    searchDivider.Position = UDim2.new(0, 10, 1, -1)
-    searchDivider.BackgroundColor3 = C.stroke
-    searchDivider.BackgroundTransparency = 0.5
-    searchDivider.BorderSizePixel = 0
-    searchDivider.ZIndex = 156
-    searchDivider.Parent = searchBox
+    -- GARIS SEARCH DIHAPUS
+    -- local searchDivider = ...
 
     -- SCROLL SELECT
     local scrollSelect = Instance.new("ScrollingFrame")
@@ -678,15 +667,15 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
     scrollSelect.ZIndex = 154
     scrollSelect.Parent = container
 
+    -- PADDING AGAR OPSI TIDAK MEPET
     local listPad = Instance.new("UIPadding")
     listPad.PaddingTop = UDim.new(0, 2)
     listPad.PaddingLeft = UDim.new(0, 4)
     listPad.PaddingRight = UDim.new(0, 4)
     listPad.Parent = scrollSelect
 
-    -- RAPATKAN JARAK ANTAR OPSI DROPDOWN DISINI
     local listLayout = Instance.new("UIListLayout")
-    listLayout.Padding = UDim.new(0, 1) -- <--- UBAH JADI 1
+    listLayout.Padding = UDim.new(0, 1) -- Rapat
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Parent = scrollSelect
 
@@ -775,7 +764,7 @@ function Lib.makeDropdown(parent, name, initialOptions, callback)
                 optLbl.Text = opt.label
                 optLbl.TextColor3 = isSelected and C.text or C.textDim
                 optLbl.TextSize = 10
-                optLbl.Font = isSelected and F.bold or F.norm
+                optLbl.Font = F.norm -- UBAH JADI NORM
                 optLbl.TextXAlignment = Enum.TextXAlignment.Left
                 optLbl.TextTruncate = Enum.TextTruncate.AtEnd
                 optLbl.BackgroundTransparency = 1
